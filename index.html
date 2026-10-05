@@ -1,0 +1,2532 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VFX & Particle Studio v4.2 - Made by Hamty92</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --sidebar-w: 460px; --accent: #d97757; --accent-hover: #c15f3c;
+            --bg-base: #1f1e1d; --bg-elevated: #262624; --bg-sunken: #1a1a19;
+            --bg-panel: #30302e; --border: #3d3d3a; --border-soft: #2f2f2c;
+            --text: #f5f4ef; --text-muted: #a8a396; --text-dim: #7a7568; }
+        html, body { height: 100%; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(1100px 550px at 12% -8%, rgba(217,119,87,0.055), transparent 65%),
+                        radial-gradient(900px 450px at 105% 100%, rgba(217,119,87,0.035), transparent 60%),
+                        var(--bg-base);
+            color: var(--text); overflow: hidden; -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3d3d3a; border-radius: 999px;
+            border: 2px solid transparent; background-clip: padding-box; }
+        ::-webkit-scrollbar-thumb:hover { background: #55524a; background-clip: padding-box;
+            border: 2px solid transparent; }
+        .checkerboard { background-color: #16150f;
+            background-image: linear-gradient(45deg, #1f1e1d 25%, transparent 25%, transparent 75%, #1f1e1d 75%, #1f1e1d),
+                linear-gradient(45deg, #1f1e1d 25%, transparent 25%, transparent 75%, #1f1e1d 75%, #1f1e1d);
+            background-size: 22px 22px; background-position: 0 0, 11px 11px;
+            box-shadow: inset 0 0 140px rgba(0,0,0,0.55); }
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%;
+            height: 16px; background: transparent; cursor: pointer; outline: none; margin: 0; }
+        input[type="range"]::-webkit-slider-runnable-track { height: 3px;
+            background: linear-gradient(90deg, #3d3d3a 0%, #4a4a46 100%); border-radius: 999px; }
+        input[type="range"]::-moz-range-track { height: 3px;
+            background: linear-gradient(90deg, #3d3d3a 0%, #4a4a46 100%); border-radius: 999px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none;
+            margin-top: -5px; width: 13px; height: 13px; border-radius: 50%;
+            background: #f5f4ef; border: 2.5px solid var(--accent);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5); transition: transform 0.12s ease; }
+        input[type="range"]:hover::-webkit-slider-thumb,
+        input[type="range"]:focus-visible::-webkit-slider-thumb { transform: scale(1.15); }
+        input[type="range"]::-moz-range-thumb { width: 13px; height: 13px; border-radius: 50%;
+            background: #f5f4ef; border: 2.5px solid var(--accent); cursor: pointer; }
+        input[type="checkbox"] { -webkit-appearance: none; appearance: none; width: 15px; height: 15px;
+            border: 1.5px solid #55524a; border-radius: 4px; background: #1a1a19; cursor: pointer;
+            position: relative; flex-shrink: 0; transition: background 0.13s, border-color 0.13s;
+            vertical-align: middle; margin: 0; }
+        input[type="checkbox"]:hover { border-color: var(--accent); }
+        input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+        input[type="checkbox"]:checked::after { content: ""; position: absolute;
+            left: 4px; top: 0.5px; width: 4px; height: 9px;
+            border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        input[type="checkbox"]:focus-visible { box-shadow: 0 0 0 3px rgba(217,119,87,0.3); outline: none; }
+        select { appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23a8a396' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 10px center;
+            background-size: 10px 6px; padding-right: 28px !important; cursor: pointer; }
+        select:hover { border-color: #55524a !important; }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+        input[type="color"] { -webkit-appearance: none; appearance: none;
+            border: 1px solid #4a4a46; border-radius: 6px; background: #1a1a19;
+            cursor: pointer; padding: 3px; transition: border-color 0.13s; }
+        input[type="color"]:hover { border-color: #55524a; }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
+        input[type="color"]::-moz-color-swatch { border: none; border-radius: 4px; }
+        input:focus-visible, select:focus-visible, textarea:focus-visible { outline: none;
+            box-shadow: 0 0 0 2px var(--bg-elevated), 0 0 0 4px rgba(217,119,87,0.45);
+            border-color: var(--accent) !important; }
+        button:focus-visible { outline: none;
+            box-shadow: 0 0 0 2px var(--bg-base), 0 0 0 4px rgba(217,119,87,0.55); }
+        .panel-box { background: linear-gradient(180deg, rgba(48,48,46,0.72) 0%, rgba(38,38,36,0.72) 100%);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border); border-radius: 0.85rem; padding: 1rem; margin-bottom: 0.9rem;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.025) inset, 0 4px 14px rgba(0,0,0,0.22);
+            transition: border-color 0.2s ease; }
+        .panel-box:hover { border-color: #4a4a46; }
+        button, label[for], .cursor-pointer { transition: all 0.16s ease; }
+        #sidebar-resizer { user-select: none; }
+        #sidebar-resizer .grip { opacity: 0;
+            transition: opacity 0.2s ease, height 0.2s ease, background 0.2s ease; }
+        #sidebar-resizer:hover .grip, #sidebar-resizer:active .grip,
+        body.sidebar-resizing #sidebar-resizer .grip { opacity: 1; height: 3rem; background: var(--accent); }
+        body.sidebar-resizing { cursor: col-resize !important; user-select: none; }
+        @media (min-width: 768px) { #main-sidebar { width: var(--sidebar-w) !important; flex-shrink: 0; } }
+        .panel-title-accent { display: inline-block; width: 3px; height: 12px;
+            border-radius: 999px; margin-right: 8px; vertical-align: middle; }
+        .sidebar-body { scrollbar-gutter: stable; }
+        .text-emerald-300 { color: #e8a589 !important; }
+        .text-slate-400 { color: #8a8778 !important; }
+        .comp-divider { border-top: 1px solid rgba(168,154,122,0.2); padding-top: 0.75rem; margin-top: 0.75rem; }
+        #size-preview { font-family: 'SF Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
+            font-variant-numeric: tabular-nums; }
+        .export-section-anchor { margin-top: 0.5rem; }
+        .est-badge { font-family: 'SF Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
+            font-variant-numeric: tabular-nums; }
+        #render-canvas { touch-action: none; }
+        .fx-card { background: rgba(26,26,25,0.7); border: 1px solid #2f2f2c;
+            border-radius: 0.5rem; padding: 0.5rem 0.6rem;
+            transition: border-color 0.15s ease; margin-bottom: 0.4rem; }
+        .fx-card:hover { border-color: #3d3d3a; }
+        .fx-card.disabled { opacity: 0.5; }
+        .fx-card.disabled .fx-body { display: none; }
+        .fx-body { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid #2f2f2c;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 0.6rem; }
+        .fx-body > .full { grid-column: 1 / -1; }
+        /* FIX: slider intensità animazione con larghezza fissa */
+        .fx-card .fx-amt-range {
+            width: 80px !important;
+            flex: 0 0 80px !important;
+            min-width: 0 !important;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col md:flex-row">
+
+    <main class="flex-1 flex flex-col relative bg-[#1a1a19] border-r border-[#3d3d3a] h-[50vh] md:h-screen order-2 md:order-1 min-w-0">
+        <div class="relative px-4 py-3 bg-gradient-to-b from-[#242422] to-[#1e1d1c] border-b border-[#3d3d3a] flex flex-wrap justify-between items-center z-10 gap-4">
+            <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#d97757]/30 to-transparent"></div>
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-[#d97757] to-[#c15f3c] shadow-inner shadow-black/30">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </span>
+                <div class="flex flex-col justify-center">
+                    <h1 class="text-[15px] font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#d97757] via-[#e8a589] to-[#cc785c] leading-tight tracking-tight">
+                        VFX & Particle Studio v4.2
+                    </h1>
+                    <span class="text-[9px] text-[#7a7568] font-medium tracking-wide leading-tight -mt-0.5">Made by Hamty92</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-[#151514] p-1.5 pl-2.5 rounded-xl border border-[#3d3d3a] shadow-inner shadow-black/40">
+                <span class="text-[11px] font-medium text-[#a8a396]">Risoluzione:</span>
+                <input type="number" id="canvas-width" value="2752" class="bg-[#1f1e1d] border border-[#4a4a46] rounded-md px-2 py-1 w-20 text-xs text-center font-semibold text-[#e8a589] focus:outline-none focus:border-[#d97757]">
+                <span class="text-[#6a6659] text-xs font-bold">×</span>
+                <input type="number" id="canvas-height" value="1536" class="bg-[#1f1e1d] border border-[#4a4a46] rounded-md px-2 py-1 w-20 text-xs text-center font-semibold text-[#e8a589] focus:outline-none focus:border-[#d97757]">
+                <button id="btn-update-canvas" class="bg-gradient-to-b from-[#e8825f] to-[#c15f3c] hover:from-[#d97757] hover:to-[#b0523a] text-white px-3 py-1 rounded-md text-xs font-semibold shadow-md shadow-black/30 active:scale-[0.97]">Imposta</button>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-hidden flex items-center justify-center p-4 relative checkerboard" id="canvas-wrapper">
+            <canvas id="render-canvas" class="shadow-[0_0_80px_rgba(0,0,0,0.95)] max-w-full max-h-full object-contain rounded-sm ring-1 ring-black/40" style="cursor: default;"></canvas>
+        </div>
+    </main>
+
+    <aside id="main-sidebar" class="w-full h-[50vh] md:h-screen bg-[#1f1e1d] flex flex-col order-1 md:order-2 border-l border-[#3d3d3a] relative z-20 overflow-hidden">
+        <div id="sidebar-resizer" class="hidden md:flex absolute -left-[3px] top-0 bottom-0 w-1.5 cursor-col-resize z-40 items-center justify-center group" title="Trascina per ridimensionare • Doppio click per reset">
+            <div class="grip w-px h-6 rounded-full bg-[#3d3d3a]"></div>
+        </div>
+
+        <div class="shrink-0 px-4 py-3 border-b border-[#2f2f2c] bg-gradient-to-b from-[#242422] to-[#1e1d1c]">
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[#2b2b29] border border-[#3d3d3a]">
+                    <svg class="w-3.5 h-3.5 text-[#d97757]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                </span>
+                <div>
+                    <div class="text-[12px] font-bold text-[#f5f4ef] leading-tight tracking-tight">Pannello Controlli</div>
+                    <div class="text-[10px] text-[#7a7568] leading-tight">Livelli · Animazioni · Effetti</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto sidebar-body">
+            <div class="p-4 space-y-3">
+
+                <div class="panel-box border-[#d97757]/25 bg-[#d97757]/[0.04]">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-[11px] font-bold text-[#e8a589] uppercase tracking-[0.08em] flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                            Gestione Livelli (Z-Index)
+                        </h2>
+                        <label class="bg-gradient-to-b from-[#e8825f] to-[#c15f3c] hover:from-[#d97757] hover:to-[#b0523a] text-white px-3 py-1 rounded-md text-[11px] cursor-pointer transition font-semibold shadow-md shadow-black/30 flex items-center gap-1 active:scale-[0.97]">
+                            <span>+ Carica Immagine</span>
+                            <input type="file" id="file-upload" accept="image/png, image/jpeg, image/webp" class="hidden">
+                        </label>
+                    </div>
+                    <div id="layer-list" class="flex flex-col gap-2 max-h-40 overflow-y-auto pr-1">
+                        <div class="text-xs text-[#7a7568] italic text-center py-5 border border-dashed border-[#3d3d3a] rounded-lg bg-[#1a1a19]/40" id="empty-layers-msg">
+                            Nessun livello attivo. Carica un PNG per iniziare.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="controls-container" class="opacity-30 pointer-events-none transition-all duration-300 filter grayscale space-y-3">
+
+                    <div class="panel-box">
+                        <h3 class="text-[11px] font-semibold text-[#f5f4ef] mb-3 uppercase tracking-[0.08em] flex items-center">
+                            <span class="panel-title-accent bg-[#8a8778]"></span>
+                            <svg class="w-4 h-4 text-[#8a8778] mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                            Posizione & Scala Livello
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[10px] font-medium text-[#a8a396] mb-1.5 tracking-wide">Posizione X (centro)</label>
+                                <input type="number" id="ctrl-x" class="w-full bg-[#1a1a19] border border-[#4a4a46] rounded-md px-2.5 py-1.5 text-xs focus:border-[#d97757] focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-medium text-[#a8a396] mb-1.5 tracking-wide">Posizione Y (centro)</label>
+                                <input type="number" id="ctrl-y" class="w-full bg-[#1a1a19] border border-[#4a4a46] rounded-md px-2.5 py-1.5 text-xs focus:border-[#d97757] focus:outline-none transition">
+                            </div>
+                            <div class="col-span-2 mt-1">
+                                <label class="block text-[10px] font-medium text-[#a8a396] mb-1.5 flex justify-between tracking-wide">
+                                    <span>Scala Modello (ancorata al centro)</span> <span id="val-scale" class="text-[#d97757] font-bold tabular-nums">1.00</span>
+                                </label>
+                                <input type="range" id="ctrl-scale" min="0.05" max="4" step="0.05" value="1" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-box border-[#d4a373]/25 bg-[#d4a373]/[0.04]">
+                        <h3 class="text-[11px] font-semibold text-[#d4a373] mb-3 uppercase tracking-[0.08em] flex items-center">
+                            <span class="panel-title-accent bg-[#d4a373]"></span>
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h3l3-8 4 16 3-8h3"></path></svg>
+                            Animazioni di movimento
+                        </h3>
+                        <div class="mb-3">
+                            <label class="block text-[10px] font-medium text-[#a8a396] mb-1.5 flex justify-between tracking-wide">
+                                <span>Velocità Globale (master)</span> <span id="val-fx-speed" class="text-[#d4a373] font-bold tabular-nums">1.0</span>
+                            </label>
+                            <input type="range" id="ctrl-fx-speed" min="0.1" max="5" step="0.1" value="1" class="w-full">
+                        </div>
+                        <p class="text-[9px] text-[#7a7568] mb-2.5 leading-relaxed">Attiva le animazioni e regola i parametri specifici di ciascuna.</p>
+                        <div id="fx-list" class="space-y-1.5"></div>
+                    </div>
+
+                    <div class="panel-box border-[#c98b7d]/25 bg-[#c98b7d]/[0.04]">
+                        <h3 class="text-[11px] font-semibold text-[#c98b7d] mb-3 uppercase tracking-[0.08em] flex items-center">
+                            <span class="panel-title-accent bg-[#c98b7d]"></span>
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                            Effetti Grafici
+                        </h3>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] font-medium text-[#a8a396] mb-1.5 tracking-wide">Seleziona Tipo Effetto</label>
+                                <select id="ctrl-effect-type" class="w-full bg-[#1a1a19] border border-[#4a4a46] rounded-md px-2.5 py-1.5 text-xs text-[#e8a589] font-semibold focus:outline-none focus:border-[#d97757] transition">
+                                    <option value="none">0. Nessun Effetto</option>
+                                    <optgroup label="─ Effetti a tutto schermo ─">
+                                        <option value="neongrid">1. Neon Grid Pulse</option>
+                                        <option value="radialburst">4. Radial Burst</option>
+                                        <option value="volumrays">7. Volumetric Rays</option>
+                                        <option value="hexgrid">8. Hex Grid Olografico</option>
+                                        <option value="chromwaves">10. Chromatic Waves</option>
+                                        <option value="starwarp">11. Starfield Warp</option>
+                                        <option value="digitalsand">12. Digital Sand</option>
+                                        <option value="plasmaorbs">13. Plasma Orbs</option>
+                                        <option value="sakura">14. Cherry Blossom Storm</option>
+                                        <option value="cyberrain">15. Cyber Rain</option>
+                                        <option value="swarm">16. Fireflies Swarm</option>
+                                        <option value="orbs">17. Floating Orbs</option>
+                                        <option value="lightmotes">18. Light Motes</option>
+                                        <option value="bubblecol">19. Bubble Column</option>
+                                        <option value="goldsparks">20. Golden Sparks</option>
+                                        <option value="inkdiff">21. Ink Diffusion</option>
+                                        <option value="crystal">22. Crystal Growth</option>
+                                        <option value="sparktrail">25. Sparkle Trail</option>
+                                        <option value="quantum">26. Quantum Particles</option>
+                                        <option value="rain">27. Pioggia</option>
+                                        <option value="wind">28. Vento</option>
+                                        <option value="lightning">29. Fulmini</option>
+                                        <option value="magic">30. Polvere Magica</option>
+                                        <option value="fire">31. Incendio</option>
+                                        <option value="highvoltage">32. Alta Tensione</option>
+                                    </optgroup>
+                                    <optgroup label="─ Effetti posizionabili ─">
+                                        <option value="runecircle">2. Rune Circle</option>
+                                        <option value="sacredgeo">3. Sacred Geometry</option>
+                                        <option value="kaleido">5. Kaleidoscope Shards</option>
+                                        <option value="auroracurtain">6. Aurora Curtains</option>
+                                        <option value="tribalrings">9. Tribal Rings</option>
+                                        <option value="energyvortex">23. Energy Vortex</option>
+                                        <option value="portal">24. Magic Portal</option>
+                                        <option value="flame">33. Fiamma Torcia</option>
+                                        <option value="hearth">34. Focolare</option>
+                                        <option value="electricarc">35. Arco Voltaico</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="flex gap-3 items-end pt-1">
+                                <div class="flex-1">
+                                    <label class="block text-[10px] font-medium text-[#a8a396] mb-1.5 tracking-wide">Colore Effetto</label>
+                                    <input type="color" id="ctrl-eff-color" value="#ffffff" class="w-full h-8 cursor-pointer">
+                                </div>
+                                <div class="flex-1">
+                                    <label class="block text-[10px] font-medium text-[#a8a396] mb-1.5 tracking-wide">Modalità Colore</label>
+                                    <select id="ctrl-eff-color-mode" class="w-full bg-[#1a1a19] border border-[#4a4a46] rounded-md px-2.5 py-1.5 text-xs text-[#e8a589] font-semibold focus:outline-none focus:border-[#d97757] transition">
+                                        <option value="default">🎨 Predefinito</option>
+                                        <option value="mono">⚪ Monocolore</option>
+                                        <option value="rainbow">🌈 Arcobaleno</option>
+                                        <option value="gradient">🌊 Gradiente</option>
+                                        <option value="duotone">🎭 Duotone</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="eff-transform-section" class="hidden bg-[#1a1a19]/70 p-2.5 rounded-md border border-[#c98b7d]/25 space-y-2">
+                                <div class="text-[9px] font-bold text-[#e8a589] uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="w-1 h-1 rounded-full bg-[#e8a589]"></span>
+                                    Trasformazione Effetto (posizionabile)
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[9px] text-[#8a8778] mb-1">Offset X</label>
+                                        <input type="number" id="ctrl-eff-x" class="w-full bg-[#1a1a19] border border-[#4a4a46] rounded-md px-2 py-1 text-xs text-[#e8a589] focus:outline-none focus:border-[#d97757]">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] text-[#8a8778] mb-1">Offset Y</label>
+                                        <input type="number" id="ctrl-eff-y" class="w-full bg-[#1a1a19] border border-[#4a4a46] rounded-md px-2 py-1 text-xs text-[#e8a589] focus:outline-none focus:border-[#d97757]">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] text-[#8a8778] mb-1 flex justify-between">
+                                        <span>Scala Effetto</span>
+                                        <span id="val-eff-scale" class="text-[#e8a589] font-bold tabular-nums">1.00</span>
+                                    </label>
+                                    <input type="range" id="ctrl-eff-scale" min="0.1" max="5" step="0.05" value="1" class="w-full">
+                                </div>
+                                <p class="text-[9px] text-[#7a7568] leading-relaxed">💡 <b class="text-[#a8a396]">Trascina il canvas</b> per spostare l'effetto. Usa lo slider per ingrandirlo o ridurlo.</p>
+                            </div>
+
+                            <label class="flex items-center gap-2 bg-[#1a1a19]/70 px-2.5 py-2 rounded-md border border-[#2f2f2c] hover:border-[#3d3d3a] cursor-pointer transition">
+                                <input type="checkbox" id="ctrl-eff-link" class="cursor-pointer">
+                                <span class="text-[10px] font-medium text-[#c2bfb4] select-none">🔗 Aggancia Effetto con Animazione</span>
+                            </label>
+                            <p class="text-[9px] text-[#7a7568] leading-relaxed -mt-1">Se disattivo, l'effetto grafico resta indipendente dalle animazioni (es. la pioggia cade sempre verticale anche se l'immagine ruota).</p>
+
+                            <div class="grid grid-cols-3 gap-2 pt-1">
+                                <div>
+                                    <label class="block text-[9px] text-[#8a8778] mb-1 tracking-wide">Densità / Qt</label>
+                                    <input type="range" id="ctrl-eff-density" min="5" max="150" step="1" value="30" class="w-full">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] text-[#8a8778] mb-1 tracking-wide">Dimensione</label>
+                                    <input type="range" id="ctrl-eff-size" min="1" max="35" step="1" value="6" class="w-full">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] text-[#8a8778] mb-1 tracking-wide">Velocità</label>
+                                    <input type="range" id="ctrl-eff-speed" min="0.1" max="10" step="0.1" value="1" class="w-full">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="export-section-anchor p-4 bg-[#1a1a19] border-t border-[#3d3d3a] flex flex-col gap-3 shadow-[0_-8px_24px_rgba(0,0,0,0.35)]">
+
+                <div class="bg-[#a89a7a]/[0.07] border border-[#a89a7a]/25 rounded-xl p-3 space-y-3">
+                    <div class="flex items-center justify-between mb-0.5">
+                        <span class="text-[10px] font-bold text-[#c2b898] uppercase tracking-[0.1em]">⚙️ Parametri Loop Seamless</span>
+                        <span class="text-[9px] text-[#7a7568]">Frequenze quantizzate</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="flex justify-between items-center text-[9px] text-[#8a8778] mb-1 tracking-wide">
+                                <span>Durata (sec)</span>
+                                <span class="flex items-center gap-1 cursor-pointer text-[#c2b898] font-semibold">
+                                    <input type="checkbox" id="loop-auto" checked class="cursor-pointer">Auto
+                                </span>
+                            </label>
+                            <input type="number" id="loop-duration" min="0.5" max="60" step="0.5" value="4" disabled class="w-full bg-[#1a1a19] border border-[#4a4a46] rounded-md px-2 py-1 text-xs text-center font-semibold text-[#c2b898] focus:outline-none focus:border-[#a89a7a] disabled:opacity-50 transition">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] text-[#8a8778] mb-1 tracking-wide">FPS</label>
+                            <select id="loop-fps" class="w-full bg-[#1a1a19] border border-[#4a4a46] rounded-md px-2 py-1 text-xs font-semibold text-[#c2b898] focus:outline-none focus:border-[#a89a7a] transition">
+                                <option value="12">12</option><option value="15">15</option><option value="20">20</option>
+                                <option value="24">24</option><option value="25">25</option><option value="30" selected>30</option>
+                                <option value="50">50</option><option value="60">60</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="loop-auto-info-box" class="bg-[#1a1a19]/85 border border-[#a89a7a]/25 rounded-md p-2 flex justify-between items-center text-[10px] font-mono transition-opacity">
+                        <span class="text-[#8a8778] flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#d97757] animate-pulse"></span>
+                            Loop calcolato:
+                        </span>
+                        <span id="loop-auto-info" class="text-emerald-300 font-bold tabular-nums">—</span>
+                    </div>
+                    <div id="loop-progress-wrap" class="hidden h-1.5 bg-[#3d3d3a] rounded-full overflow-hidden">
+                        <div id="loop-progress-bar" class="h-full bg-gradient-to-r from-[#d97757] to-[#e8a589] transition-all duration-150" style="width:0%"></div>
+                    </div>
+
+                    <button id="btn-verify-loop" class="relative w-full bg-[#2b2b29] hover:bg-[#343431] text-[#f5f4ef] font-semibold py-2 px-4 rounded-lg transition text-[11px] flex justify-center items-center gap-2 border border-[#3d3d3a] hover:border-[#4a4a46] shadow active:scale-[0.98] overflow-hidden">
+                        <span class="absolute inset-x-0 top-0 h-px bg-white/10"></span>
+                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        🔍 Verifica Precisione Loop
+                    </button>
+                    <div id="loop-verify-status" class="hidden bg-[#1a1a19]/85 border border-[#22c55e]/30 rounded-md p-2 text-[10px] font-mono text-[#86efac] text-center tabular-nums transition-all">Pronto.</div>
+                </div>
+
+                <div class="bg-[#a89a7a]/[0.07] border border-[#a89a7a]/25 rounded-xl p-3 space-y-2.5">
+                    <div class="flex items-center justify-between mb-0.5">
+                        <span class="text-[10px] font-bold text-[#c2b898] uppercase tracking-[0.1em]">🎚️ Compressione Formati</span>
+                        <span class="text-[9px] text-[#7a7568]">Peso stimato in tempo reale</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] text-[#c2b898] font-semibold w-16 shrink-0">WebM</span>
+                        <input type="range" id="ctrl-comp-webm" min="0" max="90" step="5" value="0" class="flex-1 min-w-0">
+                        <span id="val-comp-webm" class="text-[10px] text-[#c2b898] font-bold w-9 text-right tabular-nums shrink-0">0%</span>
+                        <span id="est-webm" class="est-badge text-[10px] text-[#e8a589] font-bold w-20 text-right shrink-0">—</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] text-[#c2b898] font-semibold w-16 shrink-0">GIF</span>
+                        <input type="range" id="ctrl-comp-gif" min="0" max="90" step="5" value="0" class="flex-1 min-w-0">
+                        <span id="val-comp-gif" class="text-[10px] text-[#c2b898] font-bold w-9 text-right tabular-nums shrink-0">0%</span>
+                        <span id="est-gif" class="est-badge text-[10px] text-[#e8a589] font-bold w-20 text-right shrink-0">—</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] text-[#c2b898] font-semibold w-16 shrink-0">WebP</span>
+                        <input type="range" id="ctrl-comp-webp" min="0" max="90" step="5" value="0" class="flex-1 min-w-0">
+                        <span id="val-comp-webp" class="text-[10px] text-[#c2b898] font-bold w-9 text-right tabular-nums shrink-0">0%</span>
+                        <span id="est-webp" class="est-badge text-[10px] text-[#e8a589] font-bold w-20 text-right shrink-0">—</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] text-[#c2b898] font-semibold w-16 shrink-0">Immagine</span>
+                        <input type="range" id="ctrl-comp-img" min="0" max="90" step="5" value="0" class="flex-1 min-w-0">
+                        <span id="val-comp-img" class="text-[10px] text-[#c2b898] font-bold w-9 text-right tabular-nums shrink-0">0%</span>
+                        <span id="est-img" class="est-badge text-[10px] text-[#e8a589] font-bold w-20 text-right shrink-0">—</span>
+                    </div>
+                    <div class="text-[9px] text-[#6a6659] flex justify-between items-center pt-1 border-t border-[#a89a7a]/15 mt-1">
+                        <span class="text-[#8a8778]">📐 Risoluzione · Frames</span>
+                        <span class="text-[#c2b898] font-bold font-mono tabular-nums"><span id="est-res">2752×1536</span> · <span id="est-frames">—</span></span>
+                    </div>
+                </div>
+
+                <button id="btn-export-webm" class="relative w-full bg-gradient-to-b from-[#e8825f] via-[#d97757] to-[#c15f3c] hover:from-[#d97757] hover:to-[#b0523a] text-white font-semibold py-2.5 px-4 rounded-lg transition text-xs flex justify-center items-center gap-2 shadow-lg shadow-[#d97757]/25 active:scale-[0.98] overflow-hidden">
+                    <span class="absolute inset-x-0 top-0 h-px bg-white/25"></span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <span id="text-export-webm">Esporta Seamless WebM</span>
+                </button>
+
+                <button id="btn-export-loop" class="relative w-full bg-gradient-to-b from-[#e8825f] via-[#d97757] to-[#c15f3c] hover:from-[#d97757] hover:to-[#b0523a] text-white font-semibold py-2.5 px-4 rounded-lg transition text-xs flex justify-center items-center gap-2 shadow-lg shadow-[#d97757]/25 active:scale-[0.98] overflow-hidden">
+                    <span class="absolute inset-x-0 top-0 h-px bg-white/25"></span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span id="text-export-loop">Esporta Seamless WebP</span>
+                </button>
+
+                <button id="btn-export-gif" class="relative w-full bg-gradient-to-b from-[#e8825f] via-[#d97757] to-[#c15f3c] hover:from-[#d97757] hover:to-[#b0523a] text-white font-semibold py-2.5 px-4 rounded-lg transition text-xs flex justify-center items-center gap-2 shadow-lg shadow-[#d97757]/25 active:scale-[0.98] overflow-hidden">
+                    <span class="absolute inset-x-0 top-0 h-px bg-white/25"></span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
+                    <span id="text-export-gif">Esporta Seamless GIF</span>
+                </button>
+
+                <button id="btn-export-img" class="w-full bg-[#2b2b29] hover:bg-[#343431] text-[#f5f4ef] font-semibold py-2 px-4 rounded-lg transition text-[11px] flex justify-center items-center gap-2 border border-[#3d3d3a] hover:border-[#4a4a46] shadow active:scale-[0.98]">
+                    <svg class="w-3.5 h-3.5 text-[#e8a589]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Esporta Immagine Statica
+                </button>
+
+            </div>
+        </div>
+    </aside>
+
+    <script>
+        (function() {
+            const resizer = document.getElementById('sidebar-resizer');
+            const aside = document.getElementById('main-sidebar');
+            if (!resizer || !aside) return;
+            let dragging = false;
+            function setWidth(px) {
+                const clamped = Math.max(340, Math.min(760, px));
+                document.documentElement.style.setProperty('--sidebar-w', clamped + 'px');
+            }
+            resizer.addEventListener('mousedown', (e) => {
+                if (window.innerWidth < 768) return;
+                e.preventDefault(); dragging = true;
+                document.body.classList.add('sidebar-resizing');
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!dragging) return;
+                setWidth(window.innerWidth - e.clientX);
+            });
+            window.addEventListener('mouseup', () => {
+                if (!dragging) return;
+                dragging = false; document.body.classList.remove('sidebar-resizing');
+            });
+            resizer.addEventListener('dblclick', () => {
+                document.documentElement.style.setProperty('--sidebar-w', '460px');
+            });
+        })();
+    </script>
+
+    <script>
+        const canvas = document.getElementById('render-canvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        let logicalWidth = 2752;
+        let logicalHeight = 1536;
+
+        function updateCanvasResolution() {
+            logicalWidth = parseInt(document.getElementById('canvas-width').value) || 2752;
+            logicalHeight = parseInt(document.getElementById('canvas-height').value) || 1536;
+            canvas.width = logicalWidth;
+            canvas.height = logicalHeight;
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        document.getElementById('btn-update-canvas').addEventListener('click', updateCanvasResolution);
+        updateCanvasResolution();
+
+        const RUNIC_CHARS = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ','ᛚ','ᛜ','ᛞ','ᛟ','✦','✧','❈','✺'];
+
+        const FX_LIST = [
+            { key: 'breathing',  label: 'Respiro' },
+            { key: 'vibration',  label: 'Vibrazione' },
+            { key: 'sway',       label: 'Oscillazione Pendolo' },
+            { key: 'blurpulse',  label: 'Sfocatura Pulsante' },
+            { key: 'heartbeat',  label: 'Battito Cardiaco' },
+            { key: 'float',      label: 'Fluttuazione' },
+            { key: 'shake',      label: 'Tremore Rotatorio' },
+            { key: 'brightness', label: 'Luminosità Pulsante' },
+            { key: 'glow',       label: 'Alone Luminoso' },
+            { key: 'hue',        label: 'Ciclo Colore' },
+            { key: 'saturation', label: 'Saturazione Pulsante' },
+            { key: 'fade',       label: 'Dissolvenza' },
+            { key: 'flicker',    label: 'Sfarfallio' },
+            { key: 'skew',       label: 'Onda Inclinata' },
+            { key: 'jelly',      label: 'Gelatina' },
+            { key: 'spin',       label: 'Rotazione Continua' },
+            { key: 'bounce',     label: 'Rimbalzo' },
+            { key: 'flip',       label: 'Flip Orizzontale' },
+            { key: 'chroma',     label: 'Aberrazione Cromatica' },
+            { key: 'grayscale',  label: 'Bianco e Nero Pulsante' },
+            { key: 'oscX',       label: 'Oscillazione Orizzontale' },
+            { key: 'oscY',       label: 'Oscillazione Verticale' }
+        ];
+
+        const FX_PARAMS = {
+            breathing:  { speed: true }, vibration:  { speed: true }, sway:       { speed: true },
+            blurpulse:  { speed: true }, heartbeat:  { speed: true }, float:      { speed: true },
+            shake:      { speed: true }, brightness: { speed: true }, glow:       { speed: true },
+            hue:        { speed: true }, saturation: { speed: true }, fade:       { speed: true },
+            flicker:    { speed: true }, skew:       { speed: true }, jelly:      { speed: true },
+            spin:       { speed: true }, bounce:     { speed: true }, flip:       { speed: true },
+            chroma:     { speed: true }, grayscale:  { speed: true },
+            oscX:       { speed: true, range: true }, oscY:       { speed: true, range: true }
+        };
+
+        const POSITIONABLE_EFFECTS = new Set([
+            'runecircle', 'sacredgeo', 'kaleido', 'auroracurtain',
+            'tribalrings', 'energyvortex', 'portal',
+            'flame', 'hearth', 'electricarc'
+        ]);
+
+        function LT(omega) {
+            if (loopDuration > 0 && omega !== 0) {
+                const cycles = Math.max(1, Math.round(Math.abs(omega) * loopDuration / (2 * Math.PI)));
+                omega = Math.sign(omega) * cycles * 2 * Math.PI / loopDuration;
+            }
+            return globalTime * omega;
+        }
+        function R(layer, salt) {
+            if (loopDuration > 0) {
+                const x = Math.sin(loopFrame * 12.9898 + salt * 78.233 + layer.seed) * 43758.5453;
+                return x - Math.floor(x);
+            }
+            return Math.random();
+        }
+        function hash1(n) {
+            const x = Math.sin(n * 12.9898) * 43758.5453;
+            return x - Math.floor(x);
+        }
+
+        function computeFx(layer, w, h, time) {
+            const sp = layer.fxSpeed;
+            const m = Math.min(w, h);
+            const fx = { tx: 0, ty: 0, rot: 0, sx: 1, sy: 1, skx: 0, sky: 0, alpha: 1, filters: [], glow: 0, chroma: 0, active: false };
+            const A = (k) => (layer.fx[k].on ? layer.fx[k].amt / 100 : 0);
+            const S = (k) => (layer.fx[k].speed !== undefined ? layer.fx[k].speed : 1);
+            const RNG = (k) => (layer.fx[k].range !== undefined ? layer.fx[k].range : 200);
+            let a;
+            if ((a = A('breathing')) > 0) { const s = 1 + Math.sin(LT(1.6*sp*S('breathing')))*0.15*a; fx.sx *= s; fx.sy *= s; fx.active = true; }
+            if ((a = A('vibration')) > 0) { fx.tx += (R(layer,1)-0.5)*2*m*0.02*a; fx.ty += (R(layer,2)-0.5)*2*m*0.02*a; fx.active = true; }
+            if ((a = A('sway')) > 0) { fx.rot += Math.sin(LT(1.2*sp*S('sway')))*0.35*a; fx.active = true; }
+            if ((a = A('blurpulse')) > 0) { const b = (Math.sin(LT(2*sp*S('blurpulse')))*0.5+0.5)*14*a; fx.filters.push(`blur(${b.toFixed(2)}px)`); fx.active = true; }
+            if ((a = A('heartbeat')) > 0) { const p = (LT(1.4*sp*S('heartbeat')*2*Math.PI)/(2*Math.PI))%1; const beat = Math.exp(-Math.pow((p-0.1)*18,2))+0.6*Math.exp(-Math.pow((p-0.3)*18,2)); const s = 1+beat*0.18*a; fx.sx *= s; fx.sy *= s; fx.active = true; }
+            if ((a = A('float')) > 0) { fx.tx += Math.sin(LT(0.8*sp*S('float')))*m*0.06*a; fx.ty += Math.sin(2*LT(0.8*sp*S('float')))*m*0.04*a; fx.active = true; }
+            if ((a = A('shake')) > 0) { fx.rot += (R(layer,3)-0.5)*0.12*a; fx.active = true; }
+            if ((a = A('brightness')) > 0) { const b = Math.max(0,1+Math.sin(LT(2*sp*S('brightness')))*0.6*a); fx.filters.push(`brightness(${b.toFixed(3)})`); fx.active = true; }
+            if ((a = A('glow')) > 0) { fx.glow = 8+(Math.sin(LT(2*sp*S('glow')))*0.5+0.5)*45*a; fx.active = true; }
+            if ((a = A('hue')) > 0) { fx.filters.push(`hue-rotate(${((LT(120*a*sp*S('hue')*Math.PI/180)*180/Math.PI)%360).toFixed(1)}deg)`); fx.active = true; }
+            if ((a = A('saturation')) > 0) { const s = Math.max(0,1+Math.sin(LT(2*sp*S('saturation')))*0.9*a); fx.filters.push(`saturate(${s.toFixed(3)})`); fx.active = true; }
+            if ((a = A('fade')) > 0) { fx.alpha *= 1-(Math.sin(LT(1.5*sp*S('fade')))*0.5+0.5)*0.9*a; fx.active = true; }
+            if ((a = A('flicker')) > 0) { if (R(layer,4)<0.1+0.25*a) fx.alpha *= 1-a*(0.3+R(layer,5)*0.7); fx.active = true; }
+            if ((a = A('skew')) > 0) { fx.skx += Math.sin(LT(1.5*sp*S('skew')))*0.4*a; fx.active = true; }
+            if ((a = A('jelly')) > 0) { const j = Math.sin(LT(6*sp*S('jelly')))*0.18*a; fx.sx *= 1+j; fx.sy *= 1-j; fx.active = true; }
+            if ((a = A('spin')) > 0) { fx.rot += LT(3*a*sp*S('spin')); fx.active = true; }
+            if ((a = A('bounce')) > 0) { const b = Math.abs(Math.sin(LT(3*sp*S('bounce')))); fx.ty -= b*h*0.25*a; fx.sy *= 1-(1-b)*0.12*a; fx.sx *= 1+(1-b)*0.08*a; fx.active = true; }
+            if ((a = A('flip')) > 0) { fx.sx *= (1-a)+a*Math.cos(LT(2*sp*S('flip'))); fx.active = true; }
+            if ((a = A('chroma')) > 0) { fx.chroma = 18*a*(0.6+0.4*Math.sin(LT(4*sp*S('chroma')))); fx.active = true; }
+            if ((a = A('grayscale')) > 0) { const g = (Math.sin(LT(1.5*sp*S('grayscale')))*0.5+0.5)*a; fx.filters.push(`grayscale(${g.toFixed(3)})`); fx.active = true; }
+            if ((a = A('oscX')) > 0) { fx.tx += Math.sin(LT(sp*S('oscX')))*RNG('oscX')*a; fx.active = true; }
+            if ((a = A('oscY')) > 0) { fx.ty += Math.sin(LT(sp*S('oscY')))*RNG('oscY')*a; fx.active = true; }
+            return fx;
+        }
+
+        function applyFxTransform(ctx, fx, w, h) {
+            if (!fx.active) return;
+            ctx.translate(w/2 + fx.tx, h/2 + fx.ty);
+            ctx.rotate(fx.rot);
+            ctx.transform(1, fx.sky, fx.skx, 1, 0, 0);
+            ctx.scale(fx.sx, fx.sy);
+            ctx.translate(-w/2, -h/2);
+        }
+
+        function applyFxStyle(ctx, fx) {
+            if (!fx.active) return;
+            ctx.globalAlpha = fx.alpha;
+            if (fx.filters.length) ctx.filter = fx.filters.join(' ');
+            if (fx.glow > 0) { ctx.shadowColor = 'rgba(96,165,250,0.95)'; ctx.shadowBlur = fx.glow; }
+        }
+
+        function drawChromaImage(ctx, layer, w, h, px) {
+            const pad = Math.ceil(px)+2;
+            const W = Math.max(1, Math.ceil(w))+pad*2, H = Math.max(1, Math.ceil(h))+pad*2;
+            if (!layer._chA) { layer._chA = document.createElement('canvas'); layer._chB = document.createElement('canvas'); }
+            const acc = layer._chA, chn = layer._chB;
+            if (acc.width !== W || acc.height !== H) { acc.width = W; acc.height = H; chn.width = W; chn.height = H; }
+            const a = acc.getContext('2d'), c = chn.getContext('2d');
+            a.clearRect(0,0,W,H); a.globalCompositeOperation = 'lighter';
+            const chans = [['#ff0000', -px], ['#00ff00', 0], ['#0000ff', px]];
+            for (const [col, off] of chans) {
+                c.globalCompositeOperation = 'source-over'; c.clearRect(0,0,W,H);
+                c.drawImage(layer.image, pad, pad, w, h);
+                c.globalCompositeOperation = 'multiply'; c.fillStyle = col; c.fillRect(0,0,W,H);
+                c.globalCompositeOperation = 'destination-in'; c.drawImage(layer.image, pad, pad, w, h);
+                a.drawImage(chn, off, 0);
+            }
+            ctx.drawImage(acc, -pad, -pad);
+        }
+
+        class Layer {
+            constructor(image, name) {
+                this.id = Date.now().toString() + Math.random().toString(16).substring(2);
+                this.image = image; this.name = name;
+                let initialScale = 1;
+                if (image.width > logicalWidth || image.height > logicalHeight) {
+                    initialScale = Math.min(logicalWidth/image.width, logicalHeight/image.height) * 0.95;
+                }
+                this.scale = initialScale;
+                this.x = (logicalWidth - image.width * initialScale) / 2;
+                this.y = (logicalHeight - image.height * initialScale) / 2;
+                this.fxSpeed = 1; this.seed = Math.random() * 1000;
+                this.fx = {};
+                FX_LIST.forEach(f => { this.fx[f.key] = { on: false, amt: 50, speed: 1, range: 200 }; });
+                this.effect = { type: 'none', color: '#ffffff', colorMode: 'default',
+                    density: 30, size: 6, speed: 1, offsetX: 0, offsetY: 0, scale: 1 };
+                this.effectLink = false;
+                Object.defineProperty(this.effect, 'multiColor', {
+                    get() { return this.colorMode === 'rainbow' || this.colorMode === 'gradient'; },
+                    set(v) { this.colorMode = v ? 'rainbow' : 'default'; }, configurable: true
+                });
+                this.particleManager = new LocalParticleManager(this);
+            }
+        }
+
+        class LocalParticleManager {
+            constructor(layer) { this.layer = layer; this.particles = []; }
+            _hexToHsl(hex) {
+                let r = 0, g = 0, b = 0;
+                if (hex && hex.length === 7) { r = parseInt(hex.slice(1,3),16)/255; g = parseInt(hex.slice(3,5),16)/255; b = parseInt(hex.slice(5,7),16)/255; }
+                else if (hex && hex.length === 4) { r = parseInt(hex[1]+hex[1],16)/255; g = parseInt(hex[2]+hex[2],16)/255; b = parseInt(hex[3]+hex[3],16)/255; }
+                const max = Math.max(r,g,b), min = Math.min(r,g,b);
+                let h = 0, s = 0, l = (max+min)/2;
+                if (max !== min) { const d = max-min; s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+                    switch (max) { case r: h = (g-b)/d+(g<b?6:0); break; case g: h = (b-r)/d+2; break; case b: h = (r-g)/d+4; break; }
+                    h *= 60; }
+                return { h, s: s*100, l: l*100 };
+            }
+            _shiftHue(hex, degrees) {
+                const hsl = this._hexToHsl(hex);
+                return `hsl(${((hsl.h+degrees)%360+360)%360}, ${Math.max(55,hsl.s)}%, ${Math.max(55,hsl.l)}%)`;
+            }
+            _applyColorMode(newParticles) {
+                const eff = this.layer.effect; const mode = eff.colorMode || 'default';
+                if (mode === 'default') return;
+                if (mode === 'mono') for (const p of newParticles) p.color = eff.color;
+                else if (mode === 'rainbow') for (const p of newParticles) p.color = `hsl(${Math.random()*360}, 95%, 65%)`;
+                else if (mode === 'gradient') {
+                    const hsl = this._hexToHsl(eff.color);
+                    for (const p of newParticles) { const hue = (hsl.h+(Math.random()-0.5)*120+360)%360;
+                        p.color = `hsl(${hue}, ${Math.max(55,hsl.s)}%, ${Math.max(60,hsl.l)}%)`; }
+                } else if (mode === 'duotone') {
+                    const comp = this._shiftHue(eff.color, 180);
+                    for (const p of newParticles) p.color = Math.random() < 0.5 ? eff.color : comp;
+                }
+            }
+            _age(p) { return 1 - (p.life/p.maxLife); }
+            _softCircle(ctx, x, y, r, color, alpha) {
+                if (r <= 0 || alpha <= 0.01) return;
+                const g = ctx.createRadialGradient(x,y,0,x,y,r);
+                g.addColorStop(0, color); g.addColorStop(0.5, color); g.addColorStop(1, 'rgba(0,0,0,0)');
+                const prevA = ctx.globalAlpha; ctx.globalAlpha = alpha; ctx.fillStyle = g;
+                ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.globalAlpha = prevA;
+            }
+            _glowDot(ctx, x, y, r, color, alpha, glow) {
+                if (r <= 0 || alpha <= 0.01) return;
+                ctx.save(); ctx.globalAlpha = alpha;
+                ctx.shadowColor = color; ctx.shadowBlur = glow || (r*3); ctx.fillStyle = color;
+                ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.restore();
+            }
+            _polygon(ctx, x, y, r, sides, color, alpha, rot, glow) {
+                if (r <= 0 || alpha <= 0.01) return;
+                ctx.save(); ctx.translate(x,y); ctx.rotate(rot);
+                ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.lineWidth = 1.6;
+                ctx.shadowColor = color; ctx.shadowBlur = glow || 14;
+                ctx.beginPath();
+                for (let i = 0; i <= sides; i++) { const a = (i/sides)*Math.PI*2 - Math.PI/2;
+                    const px = Math.cos(a)*r, py = Math.sin(a)*r;
+                    if (i === 0) ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+                ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0; ctx.restore();
+            }
+            _petal(ctx, x, y, r, color, alpha, rot) {
+                if (r <= 0 || alpha <= 0.01) return;
+                ctx.save(); ctx.translate(x,y); ctx.rotate(rot);
+                ctx.globalAlpha = alpha; ctx.fillStyle = color;
+                ctx.beginPath(); ctx.moveTo(0,-r);
+                ctx.bezierCurveTo(r*0.9,-r*0.5,r*0.85,r*0.45,r*0.15,r*0.9);
+                ctx.bezierCurveTo(r*0.05,r*0.95,-r*0.05,r*0.95,-r*0.15,r*0.9);
+                ctx.bezierCurveTo(-r*0.85,r*0.45,-r*0.9,-r*0.5,0,-r);
+                ctx.closePath(); ctx.fill();
+                ctx.globalAlpha = alpha*0.5; ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+                ctx.lineWidth = Math.max(0.5, r*0.045); ctx.stroke(); ctx.restore();
+            }
+            _applyDepth(p, baseSize) {
+                p.depth = Math.random(); const near = 1-p.depth;
+                p.depthMul = 0.4+near*1.3; p.size = baseSize*(0.5+near*1.1);
+            }
+            _effCenter(w, h) {
+                const eff = this.layer.effect;
+                return { cx: w/2 + (eff.offsetX||0), cy: h/2 + (eff.offsetY||0), sc: eff.scale||1 };
+            }
+
+            update(dt, w, h) {
+                const eff = this.layer.effect;
+                if (eff.type === 'none') { this.particles = []; return; }
+                const targetCount = eff.density * 2;
+                if (this.particles.length < targetCount && Math.random() < 0.7) {
+                    const _lenBefore = this.particles.length;
+                    this.spawn(w, h);
+                    if (this.particles.length > _lenBefore) this._applyColorMode(this.particles.slice(_lenBefore));
+                }
+                for (let i = this.particles.length-1; i >= 0; i--) {
+                    let p = this.particles[i];
+                    if (!p || !isFinite(p.size) || p.maxLife <= 0) { this.particles.splice(i,1); continue; }
+                    p.life -= dt * eff.speed;
+                    const age = this._age(p);
+                    if (p.life <= 0 || p.x < -200 || p.x > w+200 || p.y < -200 || p.y > h+200) {
+                        if ((eff.type === 'energyvortex' || eff.type === 'portal') && p.life > 0) {}
+                        else { this.particles.splice(i,1); continue; }
+                    }
+                    switch (eff.type) {
+                        case 'rain': p.y += p.vy*dt*eff.speed*250; if (p.y > h) p.y = -20; break;
+                        case 'wind': p.x += p.vx*dt*eff.speed*500; p.y += Math.sin(p.life*2+p.y*0.01)*0.5;
+                            if (p.x > w+40) { p.x = -40; p.y = Math.random()*h; } break;
+                        case 'magic': p.x += p.vx*dt*eff.speed*60; p.y += p.vy*dt*eff.speed*60; p.vx *= 0.985; p.vy *= 0.985; break;
+                        case 'digitalsand': p.vy += 60*dt; p.x += p.vx*dt + Math.sin(age*3+p.phase)*0.5;
+                            p.y += p.vy*dt*eff.speed; p.rot += p.vrot*dt;
+                            p.flicker = 0.55+0.45*Math.sin(age*25+p.phase*5);
+                            if (p.y > h+20) { p.y = -20; p.x = Math.random()*w; p.vy = 0; } break;
+                        case 'plasmaorbs': p.x += p.vx*dt*eff.speed; p.y += p.vy*dt*eff.speed; p.vx *= 0.985; p.vy *= 0.985;
+                            p.pulse = 0.7+0.3*Math.sin(age*4+p.phase*2); break;
+                        case 'sakura': p.y += p.vy*dt*eff.speed*45;
+                            p.x += Math.sin(p.life*1.6+p.phase)*2.0*eff.speed + Math.sin(p.life*0.4)*0.8;
+                            p.rot += p.vrot*dt*2.2; if (p.y > h+25) { p.y = -25; p.x = Math.random()*w; } break;
+                        case 'cyberrain': p.y += p.vy*dt*eff.speed*320;
+                            if (p.y > h+20) { p.y = -20; p.x = Math.floor(Math.random()*(w/8))*8+4; } break;
+                        case 'swarm': { p.angle += p.wander*dt*0.8; const cx0 = w/2, cy0 = h/2;
+                            const dx = cx0-p.x, dy = cy0-p.y; const dist = Math.sqrt(dx*dx+dy*dy)+1;
+                            p.vx += (dx/dist)*8*dt + Math.cos(p.angle)*25*dt;
+                            p.vy += (dy/dist)*8*dt + Math.sin(p.angle)*25*dt;
+                            p.vx *= 0.94; p.vy *= 0.94;
+                            p.x += p.vx*dt*eff.speed; p.y += p.vy*dt*eff.speed;
+                            p.pulse = 0.5+0.5*Math.abs(Math.sin(age*6+p.phase*4)); break; }
+                        case 'orbs': p.x += p.vx*dt*eff.speed; p.y += p.vy*dt*eff.speed; p.vx *= 0.99; p.vy *= 0.99;
+                            if (p.x < 20 || p.x > w-20) p.vx *= -1; if (p.y < 20 || p.y > h-20) p.vy *= -1;
+                            p.pulse = 0.85+0.15*Math.sin(age*3+p.phase); break;
+                        case 'lightmotes': p.vx += Math.sin(age*1.5+p.phase)*3*dt; p.vy += Math.cos(age*1.2+p.phase)*3*dt;
+                            p.vx *= 0.98; p.vy *= 0.98;
+                            p.x += p.vx*dt*eff.speed*p.depthMul; p.y += p.vy*dt*eff.speed*p.depthMul;
+                            p.twinkle = 0.4+0.6*Math.abs(Math.sin(age*7+p.phase*3)); break;
+                        case 'bubblecol': p.y -= p.vy*dt*eff.speed*55; p.x += Math.sin(p.life*3+p.phase)*1.4*eff.speed;
+                            p.wobble = Math.sin(p.life*6+p.phase); if (p.y < -25) { p.y = h+25; p.x = Math.random()*w; } break;
+                        case 'goldsparks': p.vy += 25*dt; p.vx *= 0.99; p.vy *= 0.99;
+                            p.x += p.vx*dt*eff.speed; p.y += p.vy*dt*eff.speed;
+                            p.trail = Math.max(0, (p.trail||0)+dt*2);
+                            if (age > 0.5 && Math.random() < 0.08) { p.vx += (Math.random()-0.5)*40; p.vy += (Math.random()-0.5)*40; } break;
+                        case 'inkdiff': p.size = Math.min(p.size + dt*p.growth*eff.speed, eff.size*8);
+                            p.alphaMul = Math.max(0, 1-age*1.1); p.x += p.vx*dt*eff.speed*8; p.y += p.vy*dt*eff.speed*8; break;
+                        case 'crystal': p.size += dt*p.growth*eff.speed; p.rot += p.vrot*dt*eff.speed; p.alphaMul = Math.sin(age*Math.PI); break;
+                        case 'sparktrail': p.x += p.vx*dt*eff.speed*60; p.y += p.vy*dt*eff.speed*60;
+                            p.vx *= 0.97; p.vy *= 0.97; p.size *= (1-dt*0.6); break;
+                        case 'quantum': p.x += p.vx*dt*eff.speed; p.y += p.vy*dt*eff.speed; p.vx *= 0.995; p.vy *= 0.995;
+                            p.pulse = 0.5+0.5*Math.sin(age*5+p.phase*3); break;
+                        case 'starwarp': p.z -= dt*eff.speed*0.8;
+                            if (p.z <= 0.02) { p.z = 1; p.x = Math.random()*w; p.y = Math.random()*h; p.px = p.x; p.py = p.y; }
+                            p.px = p.x; p.py = p.y;
+                            p.x += (p.x-w/2)*dt*eff.speed*0.4*(1-p.z);
+                            p.y += (p.y-h/2)*dt*eff.speed*0.4*(1-p.z); break;
+                        case 'fire': p.vy -= 30*dt; p.vx *= 0.98;
+                            p.x += p.vx*dt*eff.speed*40; p.y += p.vy*dt*eff.speed*40;
+                            p.size = Math.max(0.5, p.size*(1-dt*0.4)); break;
+                        default: break;
+                    }
+                }
+            }
+
+            spawn(w, h) {
+                const eff = this.layer.effect;
+                let p = { x: Math.random()*w, y: Math.random()*h,
+                    vx: (Math.random()-0.5)*30, vy: 0.5+Math.random()*2,
+                    size: eff.size*(0.4+Math.random()*0.8),
+                    life: 2+Math.random()*4, maxLife: 0,
+                    rot: Math.random()*Math.PI*2, vrot: (Math.random()-0.5)*5,
+                    color: eff.color, phase: Math.random()*Math.PI*2,
+                    wander: (Math.random()-0.5)*2, angle: Math.random()*Math.PI*2,
+                    depth: Math.random(), depthMul: 1, pulse: 1, alphaMul: 1 };
+                p.maxLife = p.life;
+                if (eff.multiColor) p.color = `hsl(${Math.random()*360}, 95%, 65%)`;
+
+                if (eff.type === 'neongrid' || eff.type === 'runecircle' || eff.type === 'sacredgeo' ||
+                    eff.type === 'radialburst' || eff.type === 'kaleido' || eff.type === 'auroracurtain' ||
+                    eff.type === 'volumrays' || eff.type === 'hexgrid' || eff.type === 'tribalrings' ||
+                    eff.type === 'chromwaves' || eff.type === 'energyvortex' || eff.type === 'portal' ||
+                    eff.type === 'flame' || eff.type === 'hearth' || eff.type === 'electricarc' ||
+                    eff.type === 'highvoltage') return;
+
+                if (eff.type === 'rain') { p.y = -10; p.x = Math.random()*w; }
+                else if (eff.type === 'wind') { p.x = -40; p.y = Math.random()*h; p.vx = 0.5+Math.random()*1.5; p.vy = 0;
+                    p.size = eff.size*(0.4+Math.random()*0.9); p.life = 1.5+Math.random()*1.5; p.maxLife = p.life; }
+                else if (eff.type === 'magic') { p.vx = (Math.random()-0.5)*6; p.vy = (Math.random()-0.5)*6;
+                    p.size = eff.size*(0.3+Math.random()*0.8); p.life = 0.8+Math.random()*1.5; p.maxLife = p.life; }
+                else if (eff.type === 'digitalsand') { p.x = Math.random()*w; p.y = -10;
+                    p.vx = (Math.random()-0.5)*10; p.vy = 20+Math.random()*40;
+                    p.size = eff.size*(0.3+Math.random()*0.5); p.life = 3+Math.random()*4; p.maxLife = p.life;
+                    p.rot = Math.random()*Math.PI*2; p.vrot = (Math.random()-0.5)*3;
+                    if (!eff.multiColor) { const pal = ['#00e5ff','#22d3ee','#67e8f9','#a5f3fc','#7dd3fc']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'plasmaorbs') { p.vx = (Math.random()-0.5)*22; p.vy = (Math.random()-0.5)*22;
+                    p.size = eff.size*(0.9+Math.random()*1.6); p.life = 4+Math.random()*5; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#a78bfa','#c4b5fd','#818cf8','#f0abfc','#d946ef']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'sakura') { p.x = Math.random()*w; p.y = -25; p.vx = (Math.random()-0.5)*18;
+                    p.vy = 0.7+Math.random()*1.2; p.size = eff.size*(0.9+Math.random()*1.2);
+                    p.rot = Math.random()*Math.PI*2; p.vrot = (Math.random()-0.5)*4;
+                    p.life = 6+Math.random()*5; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#fbcfe8','#f9a8d4','#fda4af','#fecdd3','#fde68a','#fef3c7']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'cyberrain') { p.y = -20; p.x = Math.floor(Math.random()*(w/8))*8+4;
+                    p.vy = 1+Math.random()*2; p.size = eff.size*(0.4+Math.random()*0.7);
+                    p.life = 4+Math.random()*4; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#00e5ff','#ff00aa','#00ffcc','#ec4899','#22d3ee']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'swarm') { const a = Math.random()*Math.PI*2;
+                    const r = Math.max(w,h)*0.6 + Math.random()*Math.max(w,h)*0.3;
+                    p.x = w/2 + Math.cos(a)*r; p.y = h/2 + Math.sin(a)*r;
+                    p.vx = 0; p.vy = 0; p.wander = (Math.random()-0.5)*4;
+                    p.size = eff.size*(0.4+Math.random()*0.8); p.life = 6+Math.random()*5; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#bef264','#a3e635','#fde047','#facc15','#86efac']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'orbs') { p.x = 40+Math.random()*(w-80); p.y = 40+Math.random()*(h-80);
+                    p.vx = (Math.random()-0.5)*40; p.vy = (Math.random()-0.5)*40;
+                    p.size = eff.size*(1.2+Math.random()*2); p.life = 5+Math.random()*5; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#22d3ee','#a78bfa','#f0abfc','#67e8f9','#c4b5fd']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'lightmotes') { p.vx = (Math.random()-0.5)*6; p.vy = (Math.random()-0.5)*6;
+                    this._applyDepth(p, eff.size*0.7); p.life = 4+Math.random()*6; p.maxLife = p.life;
+                    p.alphaBoost = 0.4+(1-p.depth)*0.6;
+                    if (!eff.multiColor) { const pal = ['#fef3c7','#fde68a','#fcd34d','#fef9c3','#fbbf24']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'bubblecol') { p.x = Math.random()*w; p.y = h+20; p.vy = 0.6+Math.random()*1.6;
+                    p.size = eff.size*(0.5+Math.random()*1.2); p.life = 5+Math.random()*5; p.maxLife = p.life; p.wobble = 0;
+                    if (!eff.multiColor) { const pal = ['#bae6fd','#a5f3fc','#7dd3fc','#e0f2fe','#cffafe']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'goldsparks') { p.x = Math.random()*w; p.y = -10;
+                    p.vx = (Math.random()-0.5)*60; p.vy = 40+Math.random()*60;
+                    p.size = eff.size*(0.35+Math.random()*0.55); p.life = 2+Math.random()*3; p.maxLife = p.life; p.trail = 0;
+                    if (!eff.multiColor) { const pal = ['#fbbf24','#fcd34d','#fde68a','#fef3c7','#f59e0b']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'inkdiff') { p.vx = (Math.random()-0.5)*1.2; p.vy = (Math.random()-0.5)*1.2;
+                    p.size = eff.size*(0.6+Math.random()*1); p.growth = 4+Math.random()*8;
+                    p.life = 3+Math.random()*3; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#60a5fa','#a78bfa','#f0abfc','#67e8f9','#22d3ee']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'crystal') { p.vx = 0; p.vy = 0;
+                    p.size = eff.size*(0.5+Math.random()*0.8); p.growth = 6+Math.random()*10;
+                    p.sides = 5+Math.floor(Math.random()*3); p.rot = Math.random()*Math.PI*2; p.vrot = (Math.random()-0.5)*1;
+                    p.life = 3+Math.random()*4; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#67e8f9','#a5f3fc','#bae6fd','#ddd6fe','#f0abfc']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'sparktrail') { p.vx = (Math.random()-0.5)*90; p.vy = (Math.random()-0.5)*90;
+                    p.size = eff.size*(0.6+Math.random()*1); p.life = 0.6+Math.random()*1; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#fef3c7','#fde68a','#fcd34d','#ffffff']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'quantum') { p.vx = (Math.random()-0.5)*30; p.vy = (Math.random()-0.5)*30;
+                    p.size = eff.size*(0.4+Math.random()*0.8); p.life = 3+Math.random()*4; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#22d3ee','#a78bfa','#f0abfc','#67e8f9','#c4b5fd','#22c55e']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'starwarp') { p.z = 1; p.px = p.x; p.py = p.y; p.vx = 0; p.vy = 0;
+                    p.size = eff.size*(0.4+Math.random()*0.9); p.life = 5+Math.random()*5; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#ffffff','#fef3c7','#bae6fd','#f0abfc']; p.color = pal[Math.floor(Math.random()*pal.length)]; } }
+                else if (eff.type === 'fire') {
+                    p.x = Math.random()*w; p.y = h+20; p.vx = (Math.random()-0.5)*30; p.vy = -(1+Math.random()*2);
+                    p.size = eff.size*(0.6+Math.random()*1.2); p.life = 1.5+Math.random()*2.5; p.maxLife = p.life;
+                    if (!eff.multiColor) { const pal = ['#fff4b0','#ffd24a','#ff9c1a','#ff5a1a','#ff2a1a']; p.color = pal[Math.floor(Math.random()*pal.length)]; }
+                }
+                this.particles.push(p);
+            }
+
+            // ========================================================================
+            // Helper: disegna una singola "lingua" di fiamma con silhouette organica
+            // ========================================================================
+            _drawFlameTongue(ctx, baseX, baseY, height, width, t, seed, hueBase, multiColor, layerIdx) {
+                const layers = [
+                    { hMul: 1.00, wMul: 1.00, alpha: 0.55, hueOff: -10, lumOff: -15, satOff: 5 },
+                    { hMul: 0.88, wMul: 0.72, alpha: 0.75, hueOff:   5, lumOff:   5, satOff: 5 },
+                    { hMul: 0.68, wMul: 0.46, alpha: 0.88, hueOff:  22, lumOff:  22, satOff: 0 },
+                    { hMul: 0.44, wMul: 0.24, alpha: 0.95, hueOff:  38, lumOff:  38, satOff: -5 }
+                ];
+                ctx.globalCompositeOperation = 'lighter';
+                for (let li = 0; li < layers.length; li++) {
+                    const L = layers[li];
+                    const h = height * L.hMul;
+                    const w2 = width * L.wMul;
+                    const hue = multiColor
+                        ? (hueBase + li * 30 + t * 40 + 360) % 360
+                        : Math.max(0, Math.min(60, hueBase + L.hueOff));
+                    const lum = Math.max(10, Math.min(98, 55 + L.lumOff));
+                    const sat = Math.max(40, Math.min(100, 95 + L.satOff));
+                    const grad = ctx.createLinearGradient(baseX, baseY, baseX, baseY - h);
+                    grad.addColorStop(0, `hsla(${hue}, ${sat}%, ${lum - 15}%, ${L.alpha * 0.75})`);
+                    grad.addColorStop(0.35, `hsla(${hue}, ${sat}%, ${lum}%, ${L.alpha})`);
+                    grad.addColorStop(0.75, `hsla(${hue}, ${sat}%, ${Math.min(98, lum + 15)}%, ${L.alpha * 0.7})`);
+                    grad.addColorStop(1, `hsla(${hue}, ${sat}%, ${Math.min(98, lum + 25)}%, 0)`);
+                    ctx.fillStyle = grad;
+
+                    const steps = 14;
+                    const spine = [];
+                    for (let i = 0; i <= steps; i++) {
+                        const f = i / steps;
+                        const y = baseY - f * h;
+                        const sway = Math.sin(t * 1.5 + f * 3.5 + seed + li * 0.7) * w2 * 0.35 * f
+                                   + Math.sin(t * 2.9 + f * 6 + seed * 1.3 + li) * w2 * 0.18 * f;
+                        const taper = Math.pow(1 - f, 0.55);
+                        spine.push({ x: baseX + sway, y, wAt: Math.max(0.5, w2 * taper) });
+                    }
+                    ctx.beginPath();
+                    for (let i = 0; i < spine.length; i++) {
+                        const p = spine[i];
+                        if (i === 0) ctx.moveTo(p.x - p.wAt, p.y);
+                        else ctx.lineTo(p.x - p.wAt, p.y);
+                    }
+                    for (let i = spine.length - 1; i >= 0; i--) {
+                        const p = spine[i];
+                        ctx.lineTo(p.x + p.wAt, p.y);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+
+            // ========================================================================
+            // DRAW LOCAL
+            // ========================================================================
+            drawLocal(ctx, w, h, globalTime) {
+                const eff = this.layer.effect;
+                if (eff.type === 'none') return;
+                ctx.save();
+                const t = LT(1);
+                const { cx, cy, sc } = this._effCenter(w, h);
+
+                if (eff.type === 'neongrid') { /* ... invariato ... */
+                    const tp = LT(1.5); const pulse = 0.7+0.3*Math.sin(tp);
+                    ctx.globalCompositeOperation = 'lighter';
+                    const horizonY = h*0.55;
+                    for (let i = -18; i <= 18; i++) {
+                        const xTop = w/2 + i*12, xBot = w/2 + i*w*0.35;
+                        ctx.strokeStyle = eff.multiColor ? `hsl(${(i*20+t*60)%360}, 100%, 60%)` : eff.color;
+                        ctx.lineWidth = 1.2; ctx.globalAlpha = 0.35*pulse;
+                        ctx.beginPath(); ctx.moveTo(xTop, horizonY); ctx.lineTo(xBot, h); ctx.stroke();
+                    }
+                    for (let k = 0; k < 14; k++) {
+                        const frac = ((k/14)+(t*0.15))%1; const ky = horizonY + frac*frac*(h-horizonY);
+                        ctx.globalAlpha = 0.5*pulse*(1-frac*0.5);
+                        ctx.strokeStyle = eff.multiColor ? `hsl(${(k*30+t*60)%360}, 100%, 60%)` : eff.color;
+                        ctx.beginPath(); ctx.moveTo(0,ky); ctx.lineTo(w,ky); ctx.stroke();
+                    }
+                    this._softCircle(ctx, w/2, horizonY, Math.min(w,h)*0.15, '#ff6b9d', 0.35*pulse);
+                    this._softCircle(ctx, w/2, horizonY, Math.min(w,h)*0.08, '#fbbf24', 0.5*pulse);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'runecircle') {
+                    const t1 = LT(0.8); const maxR = Math.min(w,h)*0.35*sc;
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (let k = 0; k < 3; k++) { const r = maxR*(0.5+k*0.25);
+                        ctx.strokeStyle = eff.multiColor ? `hsl(${(k*60+t*40)%360}, 90%, 65%)` : eff.color;
+                        ctx.globalAlpha = 0.55-k*0.12; ctx.lineWidth = 1.4;
+                        ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke(); }
+                    for (let k = 0; k < 16; k++) {
+                        const a = (k/16)*Math.PI*2 + t1;
+                        const rx = cx+Math.cos(a)*maxR, ry = cy+Math.sin(a)*maxR;
+                        ctx.save(); ctx.translate(rx,ry); ctx.rotate(a+Math.PI/2);
+                        ctx.globalAlpha = 0.85; ctx.font = `${Math.max(14, eff.size*3*sc)}px serif`;
+                        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                        ctx.fillStyle = eff.multiColor ? `hsl(${(k*22+t*30)%360}, 90%, 70%)` : eff.color;
+                        ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 12;
+                        ctx.fillText(RUNIC_CHARS[k % RUNIC_CHARS.length], 0, 0);
+                        ctx.restore();
+                    }
+                    for (let k = 0; k < 8; k++) {
+                        const a = (k/8)*Math.PI*2 - t1*1.4;
+                        const rx = cx+Math.cos(a)*maxR*0.7, ry = cy+Math.sin(a)*maxR*0.7;
+                        ctx.save(); ctx.translate(rx,ry); ctx.rotate(a+Math.PI/2);
+                        ctx.globalAlpha = 0.7; ctx.font = `${Math.max(10, eff.size*2*sc)}px serif`;
+                        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = eff.color;
+                        ctx.fillText(RUNIC_CHARS[(k*3+5) % RUNIC_CHARS.length], 0, 0);
+                        ctx.restore();
+                    }
+                    this._softCircle(ctx, cx, cy, maxR*0.4, eff.color, 0.25);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'sacredgeo') {
+                    const t1 = LT(0.5); const maxR = Math.min(w,h)*0.4*sc;
+                    ctx.globalCompositeOperation = 'lighter';
+                    const shapes = [
+                        { sides: 3, dir: 1, speed: 1.0, r: maxR*0.9 }, { sides: 4, dir: -1, speed: 0.7, r: maxR*0.75 },
+                        { sides: 6, dir: 1, speed: 0.5, r: maxR*0.6 }, { sides: 8, dir: -1, speed: 1.2, r: maxR*0.45 },
+                        { sides: 12, dir: 1, speed: 0.35, r: maxR*0.3 }
+                    ];
+                    for (let k = 0; k < shapes.length; k++) {
+                        const s = shapes[k]; const rot = t1*s.speed*s.dir;
+                        ctx.globalAlpha = 0.6;
+                        ctx.strokeStyle = eff.multiColor ? `hsl(${(k*72+t*30)%360}, 90%, 65%)` : eff.color;
+                        ctx.lineWidth = 1.6; ctx.shadowColor = ctx.strokeStyle; ctx.shadowBlur = 15;
+                        ctx.beginPath();
+                        for (let i = 0; i <= s.sides; i++) {
+                            const a = (i/s.sides)*Math.PI*2 + rot - Math.PI/2;
+                            const px = cx+Math.cos(a)*s.r, py = cy+Math.sin(a)*s.r;
+                            if (i === 0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+                        }
+                        ctx.closePath(); ctx.stroke();
+                    }
+                    ctx.shadowBlur = 0;
+                    this._softCircle(ctx, cx, cy, maxR*0.35, eff.color, 0.15);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'radialburst') {
+                    const t1 = LT(1); const nRays = 24; const maxR = Math.max(w,h)*0.7;
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (let k = 0; k < nRays; k++) {
+                        const baseA = (k/nRays)*Math.PI*2 + t1*0.3;
+                        const phaseOff = (k*7.7)%1;
+                        const dist = ((t1*0.5+phaseOff)%1)*maxR;
+                        const fade = 1-(dist/maxR); if (fade < 0.15) continue;
+                        const rayLen = maxR*0.22*fade;
+                        const a1 = baseA-0.025, a2 = baseA+0.025;
+                        ctx.globalAlpha = 0.55*fade;
+                        ctx.fillStyle = eff.multiColor ? `hsl(${(k*15+t*40)%360}, 90%, 65%)` : eff.color;
+                        ctx.beginPath();
+                        ctx.moveTo(cx+Math.cos(a1)*dist, cy+Math.sin(a1)*dist);
+                        ctx.lineTo(cx+Math.cos(a2)*dist, cy+Math.sin(a2)*dist);
+                        ctx.lineTo(cx+Math.cos(a2)*(dist+rayLen), cy+Math.sin(a2)*(dist+rayLen));
+                        ctx.lineTo(cx+Math.cos(a1)*(dist+rayLen), cy+Math.sin(a1)*(dist+rayLen));
+                        ctx.closePath(); ctx.fill();
+                    }
+                    this._softCircle(ctx, cx, cy, Math.min(w,h)*0.06, '#ffffff', 0.5);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'kaleido') {
+                    const t1 = LT(0.7); const maxR = Math.min(w,h)*0.45*sc;
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (let k = 0; k < 12; k++) {
+                        const a = (k/12)*Math.PI*2 + t1*0.4;
+                        const a2 = a + Math.PI*2/12*0.9;
+                        const r = maxR*(0.6+0.35*Math.sin(t1*2+k));
+                        const x1 = cx+Math.cos(a)*r*0.3, y1 = cy+Math.sin(a)*r*0.3;
+                        const x2 = cx+Math.cos(a)*r, y2 = cy+Math.sin(a)*r;
+                        const x3 = cx+Math.cos(a2)*r, y3 = cy+Math.sin(a2)*r;
+                        ctx.globalAlpha = 0.4+0.3*Math.sin(t1*3+k);
+                        ctx.fillStyle = eff.multiColor ? `hsla(${(k*30+t*60)%360}, 90%, 65%, 0.6)` : eff.color;
+                        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.lineTo(x3,y3);
+                        ctx.closePath(); ctx.fill();
+                        ctx.globalAlpha = 0.7; ctx.strokeStyle = eff.color; ctx.lineWidth = 1; ctx.stroke();
+                    }
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'auroracurtain') {
+                    const t1 = LT(1); const nBands = 4;
+                    const bandWidth = Math.min(w,h)*0.5*sc;
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (let b = 0; b < nBands; b++) {
+                        const baseHue = eff.multiColor ? (140+b*50+Math.sin(t1+b)*40+360)%360 : 160+b*20;
+                        const x0 = cx + (b-(nBands-1)/2)*bandWidth*0.7;
+                        const width = bandWidth;
+                        const grad = ctx.createLinearGradient(x0-width/2, 0, x0+width/2, 0);
+                        grad.addColorStop(0, `hsla(${baseHue}, 90%, 60%, 0)`);
+                        grad.addColorStop(0.5, `hsla(${baseHue}, 95%, 65%, ${0.35+0.15*Math.sin(t1+b*1.7)})`);
+                        grad.addColorStop(1, `hsla(${baseHue}, 90%, 60%, 0)`);
+                        ctx.globalAlpha = 0.7; ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        const points = [];
+                        for (let x = x0-width/2; x <= x0+width/2; x += 8) {
+                            const yTop = cy - Math.min(w,h)*0.45*sc + Math.sin(x*0.02+t1*1.4+b)*20;
+                            const yBot = cy + Math.sin(x*0.015+t1*0.9+b*1.5)*60;
+                            points.push({ x, yTop, yBot });
+                        }
+                        ctx.moveTo(points[0].x, points[0].yTop);
+                        for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].yTop);
+                        for (let i = points.length-1; i >= 0; i--) ctx.lineTo(points[i].x, points[i].yBot);
+                        ctx.closePath(); ctx.fill();
+                    }
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'volumrays') {
+                    const t1 = LT(0.4); const nRays = 8;
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (let k = 0; k < nRays; k++) {
+                        const a = (k/nRays)*Math.PI*2 + t1;
+                        const len = Math.max(w,h)*1.2;
+                        const wd = 0.06+0.03*Math.sin(t1*3+k);
+                        const x1 = cx+Math.cos(a-wd)*len, y1 = cy+Math.sin(a-wd)*len;
+                        const x2 = cx+Math.cos(a+wd)*len, y2 = cy+Math.sin(a+wd)*len;
+                        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, len);
+                        grad.addColorStop(0, eff.multiColor ? `hsla(${(k*45+t*40)%360}, 90%, 70%, 0.6)` : eff.color);
+                        grad.addColorStop(0.4, eff.multiColor ? `hsla(${(k*45+t*40)%360}, 90%, 65%, 0.2)` : eff.color);
+                        grad.addColorStop(1, 'rgba(0,0,0,0)');
+                        ctx.globalAlpha = 0.5; ctx.fillStyle = grad;
+                        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x1,y1); ctx.lineTo(x2,y2);
+                        ctx.closePath(); ctx.fill();
+                    }
+                    this._softCircle(ctx, cx, cy, Math.min(w,h)*0.08, '#ffffff', 0.4);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'hexgrid') {
+                    const t1 = LT(0.6);
+                    const hexSize = Math.max(14, eff.size*4);
+                    const hexH = hexSize*Math.sqrt(3);
+                    const cols = Math.ceil(w/(hexSize*1.5))+2;
+                    const rows = Math.ceil(h/hexH)+2;
+                    ctx.globalCompositeOperation = 'lighter'; ctx.lineWidth = 1;
+                    for (let r = -1; r < rows; r++) for (let c = -1; c < cols; c++) {
+                        const hx = c*hexSize*1.5;
+                        const hy = r*hexH + (c%2 === 0 ? 0 : hexH/2);
+                        const dist = Math.sqrt((hx-w/2)**2 + (hy-h/2)**2);
+                        const wave = 0.4+0.6*(0.5+0.5*Math.sin(dist*0.02-t1*2));
+                        const hue = eff.multiColor ? (dist*0.5+t*40)%360 : null;
+                        ctx.globalAlpha = wave*0.35;
+                        ctx.strokeStyle = hue !== null ? `hsl(${hue}, 90%, 65%)` : eff.color;
+                        ctx.beginPath();
+                        for (let i = 0; i <= 6; i++) {
+                            const a = (i/6)*Math.PI*2 + Math.PI/6;
+                            const px = hx+Math.cos(a)*hexSize, py = hy+Math.sin(a)*hexSize;
+                            if (i === 0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+                        }
+                        ctx.stroke();
+                    }
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'tribalrings') {
+                    const t1 = LT(0.9); const maxR = Math.min(w,h)*0.4*sc;
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (let ring = 0; ring < 4; ring++) {
+                        const r = maxR*(0.35+ring*0.2);
+                        const dir = ring%2 === 0 ? 1 : -1;
+                        const rot = t1*(0.4+ring*0.15)*dir;
+                        const nTicks = 24+ring*8;
+                        const hue = eff.multiColor ? (ring*60+t*30)%360 : null;
+                        ctx.globalAlpha = 0.6;
+                        ctx.strokeStyle = hue !== null ? `hsl(${hue}, 90%, 65%)` : eff.color;
+                        ctx.lineWidth = 1.4;
+                        ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+                        for (let k = 0; k < nTicks; k++) {
+                            const a = (k/nTicks)*Math.PI*2 + rot;
+                            const len = (k%3 === 0) ? 10 : 4;
+                            const x1 = cx+Math.cos(a)*r, y1 = cy+Math.sin(a)*r;
+                            const x2 = cx+Math.cos(a)*(r+len), y2 = cy+Math.sin(a)*(r+len);
+                            ctx.globalAlpha = 0.75;
+                            ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+                        }
+                    }
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'chromwaves') {
+                    const t1 = LT(1.2); const maxR = Math.max(w,h)*0.7;
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (let k = 0; k < 10; k++) {
+                        const phase = ((k/10)+t1*0.15)%1;
+                        const r = phase*maxR; const fade = 1-phase;
+                        const hue = eff.multiColor ? (k*36+t*50)%360 : 200+k*15;
+                        ctx.globalAlpha = 0.35*fade;
+                        ctx.strokeStyle = eff.multiColor ? `hsl(${hue}, 90%, 65%)` : eff.color;
+                        ctx.lineWidth = 2+fade*3;
+                        ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+                    }
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'energyvortex') {
+                    const t1 = LT(1); const maxR = Math.max(w,h)*0.55*sc;
+                    ctx.globalCompositeOperation = 'lighter';
+                    for (let arm = 0; arm < 5; arm++) {
+                        const baseA = (arm/5)*Math.PI*2 + t1*1.2;
+                        const hue = eff.multiColor ? (arm*72+t*50)%360 : null;
+                        ctx.strokeStyle = hue !== null ? `hsl(${hue}, 90%, 65%)` : eff.color;
+                        ctx.shadowColor = ctx.strokeStyle; ctx.shadowBlur = 14;
+                        ctx.lineWidth = 2.5; ctx.globalAlpha = 0.75;
+                        ctx.beginPath();
+                        for (let k = 0; k <= 40; k++) {
+                            const frac = k/40; const r = frac*maxR;
+                            const a = baseA + frac*Math.PI*2.2;
+                            const x = cx+Math.cos(a)*r, y = cy+Math.sin(a)*r;
+                            if (k === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+                        }
+                        ctx.stroke();
+                    }
+                    ctx.shadowBlur = 0;
+                    this._softCircle(ctx, cx, cy, Math.min(w,h)*0.1*sc, '#ffffff', 0.6);
+                    this._softCircle(ctx, cx, cy, Math.min(w,h)*0.04*sc, eff.color, 0.9);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'portal') {
+                    const t1 = LT(0.7); const maxR = Math.min(w,h)*0.32*sc;
+                    ctx.globalCompositeOperation = 'lighter';
+                    const grad = ctx.createRadialGradient(cx, cy, maxR*0.3, cx, cy, maxR*1.5);
+                    grad.addColorStop(0, 'rgba(0,0,0,0)');
+                    grad.addColorStop(0.6, eff.multiColor ? 'rgba(167,139,250,0.35)' : eff.color);
+                    grad.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.globalAlpha = 0.65; ctx.fillStyle = grad;
+                    ctx.beginPath(); ctx.arc(cx, cy, maxR*1.5, 0, Math.PI*2); ctx.fill();
+                    for (let ring = 0; ring < 5; ring++) {
+                        const r = maxR*(1-ring*0.15);
+                        const rot = t1*(0.6+ring*0.3)*(ring%2 === 0 ? 1 : -1);
+                        const nTicks = 8+ring*4;
+                        const hue = eff.multiColor ? (ring*60+t*40)%360 : null;
+                        ctx.globalAlpha = 0.8-ring*0.1;
+                        ctx.strokeStyle = hue !== null ? `hsl(${hue}, 90%, 70%)` : eff.color;
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+                        for (let k = 0; k < nTicks; k++) {
+                            const a = (k/nTicks)*Math.PI*2 + rot;
+                            const x1 = cx+Math.cos(a)*r, y1 = cy+Math.sin(a)*r;
+                            const x2 = cx+Math.cos(a)*(r+6), y2 = cy+Math.sin(a)*(r+6);
+                            ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+                        }
+                    }
+                    const coreSize = maxR*(0.4+0.1*Math.sin(t1*3));
+                    this._softCircle(ctx, cx, cy, coreSize, '#ffffff', 0.7);
+                    this._softCircle(ctx, cx, cy, coreSize*0.5, eff.color, 0.9);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                // ============= FIAMMA TORCIA (posizionabile) =============
+                else if (eff.type === 'flame') {
+                    const baseR = Math.min(w, h) * 0.14 * sc;
+                    const tf = LT(2.5);
+                    const baseY = cy + baseR * 0.9;
+                    const flameH = baseR * 3.2;
+                    const flameW = baseR * 0.65;
+
+                    // Alone ambientale
+                    const glowR = baseR * 3.5;
+                    const glowGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy + baseR * 0.3, glowR);
+                    glowGrad.addColorStop(0, eff.multiColor ? 'rgba(255,200,120,0.28)' : 'rgba(255,180,90,0.30)');
+                    glowGrad.addColorStop(0.4, eff.multiColor ? 'rgba(255,140,60,0.12)' : 'rgba(255,110,40,0.13)');
+                    glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = glowGrad;
+                    ctx.beginPath(); ctx.arc(cx, cy + baseR * 0.3, glowR, 0, Math.PI * 2); ctx.fill();
+
+                    // Corpo fiamma: 5 "lingue" con seed diversi
+                    const baseHue = eff.multiColor ? 0 : 22;
+                    const tongues = [
+                        { off: -0.30, hMul: 0.75, seed: 1.1 },
+                        { off:  0.20, hMul: 0.90, seed: 3.3 },
+                        { off: -0.08, hMul: 1.05, seed: 5.7 },
+                        { off:  0.32, hMul: 0.70, seed: 8.1 },
+                        { off: -0.35, hMul: 0.85, seed: 11.4 },
+                        { off:  0.05, hMul: 1.15, seed: 14.2 }
+                    ];
+                    for (const tg of tongues) {
+                        const bx = cx + tg.off * flameW * 1.1;
+                        const h2 = flameH * tg.hMul;
+                        this._drawFlameTongue(ctx, bx, baseY, h2, flameW * 0.55, tf, tg.seed, baseHue, eff.multiColor, 0);
+                    }
+
+                    // Scintille in salita
+                    const nSparks = 14;
+                    for (let i = 0; i < nSparks; i++) {
+                        const seed = i * 3.7;
+                        const cycle = (tf * 0.45 + hash1(seed)) % 1;
+                        const rise = cycle * flameH * 1.5;
+                        const startX = cx + (hash1(seed + 1) - 0.5) * flameW * 0.7;
+                        const sway = Math.sin(tf * 2 + i * 1.7) * flameW * 0.4 * cycle;
+                        const sx = startX + sway;
+                        const sy = baseY - rise;
+                        const sizeS = (1 - cycle) * baseR * 0.13 + 0.5;
+                        const alphaS = Math.sin(cycle * Math.PI) * 0.85;
+                        ctx.globalAlpha = alphaS;
+                        const hueS = eff.multiColor ? (i * 30 + tf * 40 + 360) % 360 : 45 - cycle * 25;
+                        ctx.fillStyle = `hsl(${hueS}, 100%, ${75 - cycle * 30}%)`;
+                        ctx.beginPath(); ctx.arc(sx, sy, sizeS, 0, Math.PI * 2); ctx.fill();
+                    }
+                    ctx.globalAlpha = 1;
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                // ============= FOCOLARE (campfire, posizionabile) =============
+                else if (eff.type === 'hearth') {
+                    const baseR = Math.min(w, h) * 0.22 * sc;
+                    const tf = LT(2.2);
+                    const baseY = cy + baseR * 0.55;
+                    const flameH = baseR * 1.5;
+
+                    // Alone caldo
+                    const glowR = baseR * 3.2;
+                    const glowGrad = ctx.createRadialGradient(cx, baseY - baseR * 0.2, 0, cx, baseY - baseR * 0.2, glowR);
+                    glowGrad.addColorStop(0, eff.multiColor ? 'rgba(255,190,100,0.30)' : 'rgba(255,160,70,0.32)');
+                    glowGrad.addColorStop(0.45, eff.multiColor ? 'rgba(255,130,50,0.12)' : 'rgba(255,100,40,0.14)');
+                    glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = glowGrad;
+                    ctx.beginPath(); ctx.arc(cx, baseY - baseR * 0.2, glowR, 0, Math.PI * 2); ctx.fill();
+
+                    // Tronchi del campfire
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = '#5b3a1e';
+                    ctx.lineCap = 'round';
+                    ctx.lineWidth = Math.max(3, baseR * 0.14);
+                    for (let i = 0; i < 3; i++) {
+                        const a = (i / 3) * Math.PI - Math.PI / 2 + tf * 0.02;
+                        const len = baseR * 0.9;
+                        const x1 = cx - Math.cos(a) * len * 0.7;
+                        const y1 = baseY + baseR * 0.35 - Math.sin(a) * baseR * 0.12;
+                        const x2 = cx + Math.cos(a) * len * 0.7;
+                        const y2 = baseY + baseR * 0.35 + Math.sin(a) * baseR * 0.12;
+                        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                        ctx.strokeStyle = i === 0 ? '#7a4d27' : '#4a2e16';
+                    }
+                    // Braci incandescenti
+                    ctx.globalCompositeOperation = 'lighter';
+                    this._softCircle(ctx, cx, baseY + baseR * 0.35, baseR * 0.75, eff.multiColor ? '#ff5020' : '#ff6a20', 0.55);
+
+                    // Fiamme multiple (basse, larghe) - 5 sorgenti
+                    const srcs = [
+                        { off: -0.55, hMul: 0.75, seed: 0.3 },
+                        { off: -0.22, hMul: 1.00, seed: 2.8 },
+                        { off:  0.05, hMul: 1.10, seed: 4.1 },
+                        { off:  0.30, hMul: 0.95, seed: 6.9 },
+                        { off:  0.58, hMul: 0.80, seed: 9.4 }
+                    ];
+                    const baseHueH = eff.multiColor ? 0 : 25;
+                    const flameW = baseR * 0.42;
+                    for (const src of srcs) {
+                        const bx = cx + src.off * baseR * 0.9;
+                        const h2 = flameH * src.hMul;
+                        this._drawFlameTongue(ctx, bx, baseY + baseR * 0.3, h2, flameW, tf, src.seed, baseHueH, eff.multiColor, 0);
+                    }
+
+                    // Scintille/braci che salgono
+                    const nSparks = 22;
+                    for (let i = 0; i < nSparks; i++) {
+                        const seed = i * 5.1;
+                        const cycle = (tf * 0.35 + hash1(seed)) % 1;
+                        const rise = cycle * flameH * 2.0;
+                        const startX = cx + (hash1(seed + 1) - 0.5) * baseR * 1.4;
+                        const sway = Math.sin(tf * 1.8 + i * 1.3) * baseR * 0.5 * cycle;
+                        const sx = startX + sway;
+                        const sy = baseY + baseR * 0.3 - rise;
+                        const sizeS = (1 - cycle) * baseR * 0.09 + 0.4;
+                        const alphaS = Math.sin(cycle * Math.PI) * 0.9;
+                        ctx.globalAlpha = alphaS;
+                        const hueS = eff.multiColor ? (i * 20 + tf * 40 + 360) % 360 : 50 - cycle * 35;
+                        ctx.fillStyle = `hsl(${hueS}, 100%, ${78 - cycle * 35}%)`;
+                        ctx.beginPath(); ctx.arc(sx, sy, sizeS, 0, Math.PI * 2); ctx.fill();
+                    }
+                    ctx.globalAlpha = 1;
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'electricarc') {
+                    const t1 = LT(6); const baseR = Math.min(w,h)*0.25*sc;
+                    ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+                    for (let arc = 0; arc < 3; arc++) {
+                        const seed = Math.floor(t1*3) + arc*7;
+                        const a1 = hash1(seed)*Math.PI*2;
+                        const a2 = a1 + Math.PI*(0.5+hash1(seed+1)*0.5);
+                        const r1 = baseR*(0.5+hash1(seed+2)*0.5);
+                        const r2 = baseR*(0.5+hash1(seed+3)*0.5);
+                        const x1 = cx+Math.cos(a1)*r1, y1 = cy+Math.sin(a1)*r1;
+                        const x2 = cx+Math.cos(a2)*r2, y2 = cy+Math.sin(a2)*r2;
+                        const hue = eff.multiColor ? (hash1(seed+4)*360) : null;
+                        const col = hue !== null ? `hsl(${hue}, 100%, 70%)` : (eff.color === '#ffffff' ? '#a5d8ff' : eff.color);
+                        ctx.strokeStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 22;
+                        ctx.lineWidth = 2.5; ctx.globalAlpha = 0.9;
+                        ctx.beginPath(); ctx.moveTo(x1,y1);
+                        const segs = 10;
+                        for (let s = 1; s < segs; s++) {
+                            const f = s/segs;
+                            const nx = x1+(x2-x1)*f, ny = y1+(y2-y1)*f;
+                            const perp = { x: -(y2-y1), y: x2-x1 };
+                            const plen = Math.sqrt(perp.x**2+perp.y**2)||1;
+                            const jitter = (hash1(seed*13+s)-0.5)*baseR*0.35;
+                            ctx.lineTo(nx + perp.x/plen*jitter, ny + perp.y/plen*jitter);
+                        }
+                        ctx.lineTo(x2,y2); ctx.stroke();
+                        ctx.globalAlpha = 0.3; ctx.lineWidth = 8; ctx.stroke();
+                    }
+                    ctx.shadowBlur = 0;
+                    this._softCircle(ctx, cx, cy, baseR*0.6, eff.color, 0.15);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'highvoltage') {
+                    const t2 = LT(5);
+                    ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+                    for (let arc = 0; arc < 4; arc++) {
+                        const seed = Math.floor(t2*4) + arc*11;
+                        const startX = hash1(seed)*w, startY = hash1(seed+1)*h;
+                        const angle = hash1(seed+2)*Math.PI*2;
+                        const len = Math.min(w,h)*(0.5+hash1(seed+3)*0.7);
+                        const ex = startX+Math.cos(angle)*len, ey = startY+Math.sin(angle)*len;
+                        const hue = eff.multiColor ? (hash1(seed+4)*360) : null;
+                        const col = hue !== null ? `hsl(${hue}, 100%, 75%)` : (eff.color === '#ffffff' ? '#a5d8ff' : eff.color);
+                        ctx.strokeStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 28;
+                        ctx.lineWidth = 2; ctx.globalAlpha = 0.85;
+                        ctx.beginPath(); ctx.moveTo(startX,startY);
+                        const segs = 14;
+                        for (let s = 1; s < segs; s++) {
+                            const f = s/segs;
+                            const nx = startX+(ex-startX)*f, ny = startY+(ey-startY)*f;
+                            const perp = { x: -(ey-startY), y: ex-startX };
+                            const plen = Math.sqrt(perp.x**2+perp.y**2)||1;
+                            const jitter = (hash1(seed*13+s)-0.5)*60;
+                            ctx.lineTo(nx + perp.x/plen*jitter, ny + perp.y/plen*jitter);
+                        }
+                        ctx.lineTo(ex,ey); ctx.stroke();
+                        ctx.globalAlpha = 0.25; ctx.lineWidth = 10; ctx.stroke();
+                    }
+                    ctx.shadowBlur = 0;
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+                else if (eff.type === 'lightning') {
+                    const t2 = LT(4);
+                    const cyc = (t2/(2*Math.PI))%1;
+                    const flash = Math.exp(-Math.pow((cyc-0.05)*20, 2)) +
+                                  Math.exp(-Math.pow((cyc-0.13)*20, 2))*0.55 +
+                                  Math.exp(-Math.pow((cyc-0.55)*22, 2))*0.4;
+                    if (flash > 0.04) {
+                        const seedIdx = Math.floor(t2*0.5);
+                        const startX = hash1(seedIdx+1)*w;
+                        const hue = eff.multiColor ? (hash1(seedIdx)*360) : null;
+                        ctx.globalAlpha = Math.min(1, flash*1.2);
+                        ctx.strokeStyle = hue !== null ? `hsl(${hue}, 100%, 75%)` : eff.color;
+                        ctx.shadowColor = ctx.strokeStyle; ctx.shadowBlur = 25*flash;
+                        ctx.lineWidth = 1.5+flash*2.5; ctx.lineCap = 'round';
+                        ctx.beginPath(); ctx.moveTo(startX, 0);
+                        let curX = startX, curY = 0;
+                        let s = seedIdx*13+1, segs = 0;
+                        while (curY < h && segs < 40) {
+                            s++; segs++;
+                            const r1 = hash1(s*1.3), r2 = hash1(s*2.7);
+                            const dy = 20+r1*30, dx = (r2-0.5)*60;
+                            curX += dx; curY += dy;
+                            ctx.lineTo(curX, curY);
+                            if (r1 > 0.72 && curY < h*0.85) {
+                                ctx.moveTo(curX, curY);
+                                ctx.lineTo(curX+(r2-0.5)*80, curY+25+r1*40);
+                                ctx.moveTo(curX, curY);
+                            }
+                        }
+                        ctx.stroke();
+                        ctx.globalAlpha = flash*0.18; ctx.shadowBlur = 60; ctx.lineWidth = 8; ctx.stroke();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+
+                // Particelle generiche
+                for (let p of this.particles) {
+                    const age = this._age(p);
+                    let alpha = Math.min(1, p.life) * Math.min(1, (p.maxLife - p.life) * 2);
+                    if (alpha < 0) alpha = 0;
+                    if (p.alphaBoost) alpha *= p.alphaBoost;
+                    if (p.alphaMul) alpha *= p.alphaMul;
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = p.color; ctx.strokeStyle = p.color;
+                    switch (eff.type) {
+                        case 'rain': ctx.lineWidth = Math.max(1, p.size*0.3);
+                            ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x,p.y+p.size*4); ctx.stroke(); break;
+                        case 'wind': ctx.globalAlpha = alpha*0.75; ctx.lineWidth = Math.max(0.6, p.size*0.35);
+                            ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x+p.size*8, p.y+Math.sin(p.life*5)*2); ctx.stroke(); break;
+                        case 'magic': ctx.shadowColor = p.color; ctx.shadowBlur = 12;
+                            ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); ctx.shadowBlur = 0; break;
+                        case 'digitalsand': { const fl = p.flicker||1;
+                            ctx.globalAlpha = alpha*fl;
+                            ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+                            ctx.fillRect(-p.size,-p.size,p.size*2,p.size*2);
+                            ctx.globalAlpha = alpha*fl*0.4; ctx.fillStyle = '#ffffff';
+                            ctx.fillRect(-p.size,-p.size,p.size*2,p.size*0.6); ctx.restore(); break; }
+                        case 'plasmaorbs': { const pulse = p.pulse||1;
+                            ctx.globalCompositeOperation = 'lighter';
+                            this._softCircle(ctx, p.x, p.y, p.size*2.5*pulse, p.color, alpha*0.45);
+                            this._softCircle(ctx, p.x, p.y, p.size*1.2*pulse, p.color, alpha*0.65);
+                            ctx.globalAlpha = alpha; ctx.fillStyle = '#ffffff';
+                            ctx.beginPath(); ctx.arc(p.x,p.y,p.size*0.4,0,Math.PI*2); ctx.fill();
+                            ctx.globalCompositeOperation = 'source-over'; break; }
+                        case 'sakura': this._petal(ctx, p.x, p.y, p.size*1.5, p.color, alpha, p.rot); break;
+                        case 'cyberrain': ctx.lineWidth = Math.max(1, p.size*0.4);
+                            ctx.shadowColor = p.color; ctx.shadowBlur = 8;
+                            ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x,p.y+p.size*8); ctx.stroke();
+                            ctx.shadowBlur = 0; ctx.globalAlpha = alpha*0.9; ctx.fillStyle = '#ffffff';
+                            ctx.beginPath(); ctx.arc(p.x,p.y,p.size*0.5,0,Math.PI*2); ctx.fill(); break;
+                        case 'swarm': { const pulse = p.pulse||1;
+                            this._softCircle(ctx, p.x, p.y, p.size*4*pulse, p.color, alpha*0.35);
+                            this._softCircle(ctx, p.x, p.y, p.size*1.6*pulse, p.color, alpha*0.75);
+                            ctx.globalAlpha = alpha*pulse; ctx.fillStyle = '#fffefa';
+                            ctx.beginPath(); ctx.arc(p.x,p.y,p.size*0.55,0,Math.PI*2); ctx.fill(); break; }
+                        case 'orbs': { const pulse = p.pulse||1;
+                            ctx.globalCompositeOperation = 'lighter';
+                            this._softCircle(ctx, p.x, p.y, p.size*2.2*pulse, p.color, alpha*0.4);
+                            this._softCircle(ctx, p.x, p.y, p.size*1.1*pulse, p.color, alpha*0.7);
+                            ctx.globalAlpha = alpha*0.85; ctx.strokeStyle = p.color; ctx.lineWidth = 1;
+                            ctx.beginPath(); ctx.arc(p.x,p.y,p.size*1.3,0,Math.PI*2); ctx.stroke();
+                            ctx.globalCompositeOperation = 'source-over'; break; }
+                        case 'lightmotes': { const tw = p.twinkle||1;
+                            ctx.globalAlpha = alpha*tw;
+                            this._softCircle(ctx, p.x, p.y, p.size*3, p.color, alpha*tw*0.4);
+                            ctx.globalAlpha = alpha*tw; ctx.fillStyle = '#fffef2';
+                            ctx.beginPath(); ctx.arc(p.x,p.y,p.size*0.6,0,Math.PI*2); ctx.fill(); break; }
+                        case 'bubblecol': { const wob = p.wobble||0;
+                            ctx.lineWidth = 1.8; ctx.globalAlpha = alpha*0.9; ctx.strokeStyle = p.color;
+                            ctx.beginPath(); ctx.ellipse(p.x,p.y,p.size*(1+wob*0.09),p.size,0,0,Math.PI*2); ctx.stroke();
+                            ctx.globalAlpha = alpha*0.18; ctx.fillStyle = p.color;
+                            ctx.beginPath(); ctx.arc(p.x,p.y,p.size*0.9,0,Math.PI*2); ctx.fill();
+                            ctx.globalAlpha = alpha*0.95; ctx.fillStyle = '#ffffff';
+                            ctx.beginPath(); ctx.arc(p.x-p.size*0.35, p.y-p.size*0.4, Math.max(1, p.size*0.22), 0, Math.PI*2); ctx.fill(); break; }
+                        case 'goldsparks': ctx.globalCompositeOperation = 'lighter';
+                            this._softCircle(ctx, p.x, p.y, p.size*3.5, p.color, alpha*0.5);
+                            this._softCircle(ctx, p.x, p.y, p.size*1.3, '#ffffff', alpha*0.8);
+                            ctx.globalCompositeOperation = 'source-over'; break;
+                        case 'inkdiff': { const grad = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size);
+                            grad.addColorStop(0, p.color); grad.addColorStop(0.55, p.color); grad.addColorStop(1, 'rgba(0,0,0,0)');
+                            ctx.globalAlpha = alpha*0.55; ctx.fillStyle = grad;
+                            ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); break; }
+                        case 'crystal': ctx.globalCompositeOperation = 'lighter';
+                            this._polygon(ctx, p.x, p.y, p.size*1.6, p.sides||6, p.color, alpha*0.7, p.rot, 12);
+                            ctx.globalAlpha = alpha*0.5; ctx.fillStyle = p.color;
+                            ctx.beginPath(); ctx.arc(p.x,p.y,p.size*0.35,0,Math.PI*2); ctx.fill();
+                            ctx.globalCompositeOperation = 'source-over'; break;
+                        case 'sparktrail': ctx.globalCompositeOperation = 'lighter';
+                            ctx.strokeStyle = p.color; ctx.shadowColor = p.color; ctx.shadowBlur = 15;
+                            ctx.lineWidth = Math.max(1, p.size*0.6);
+                            ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x-p.vx*0.05, p.y-p.vy*0.05); ctx.stroke();
+                            ctx.shadowBlur = 0;
+                            this._softCircle(ctx, p.x, p.y, p.size*2, p.color, alpha*0.7);
+                            ctx.globalCompositeOperation = 'source-over'; break;
+                        case 'quantum': { const pulse = p.pulse||1;
+                            this._glowDot(ctx, p.x, p.y, p.size*(0.6+pulse*0.4), p.color, alpha*pulse, p.size*6);
+                            this._softCircle(ctx, p.x, p.y, p.size*2.5*pulse, p.color, alpha*0.3); break; }
+                        case 'starwarp': { const z = p.z||0.5; const near = 1-z;
+                            if (p.px !== undefined && p.py !== undefined && near > 0.1) {
+                                const dx = p.x-p.px, dy = p.y-p.py;
+                                ctx.strokeStyle = p.color;
+                                ctx.lineWidth = Math.max(0.5, p.size*near*1.6);
+                                ctx.globalAlpha = alpha*near;
+                                ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x-dx*12, p.y-dy*12); ctx.stroke();
+                            }
+                            ctx.globalAlpha = alpha; ctx.fillStyle = p.color;
+                            ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0.6, p.size*near*1.4),0,Math.PI*2); ctx.fill(); break; }
+                        case 'fire': ctx.globalCompositeOperation = 'lighter';
+                            this._softCircle(ctx, p.x, p.y, p.size*2.8, p.color, alpha*0.55);
+                            this._softCircle(ctx, p.x, p.y, p.size*1.1, '#fff4b0', alpha*0.7);
+                            ctx.globalCompositeOperation = 'source-over'; break;
+                        default: ctx.fillRect(p.x,p.y,p.size,p.size); break;
+                    }
+                }
+                ctx.restore();
+            }
+        }
+
+        let layers = [];
+        let activeLayerIndex = -1;
+        let globalTime = 0;
+        let lastTime = performance.now();
+        let loopDuration = 0;
+        let loopFrame = 0;
+        let isLoopExporting = false;
+
+        const layerListEl = document.getElementById('layer-list');
+        const emptyMsgEl = document.getElementById('empty-layers-msg');
+        const controlsContainer = document.getElementById('controls-container');
+
+        document.getElementById('file-upload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const img = new Image();
+                img.onload = () => {
+                    const layer = new Layer(img, file.name);
+                    layers.push(layer);
+                    selectLayer(layers.length - 1);
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        });
+
+        function updateLayerListUI() {
+            if (layers.length === 0) {
+                emptyMsgEl.style.display = 'block';
+                layerListEl.innerHTML = '';
+                layerListEl.appendChild(emptyMsgEl);
+                return;
+            }
+            emptyMsgEl.style.display = 'none';
+            layerListEl.innerHTML = '';
+            for (let i = layers.length-1; i >= 0; i--) {
+                const layer = layers[i];
+                const isActive = (i === activeLayerIndex);
+                const div = document.createElement('div');
+                div.className = `flex justify-between items-center p-2 rounded-lg cursor-pointer border transition-all ${
+                    isActive ? 'bg-[#d97757] border-[#e8a589] text-white shadow-lg shadow-[#d97757]/25' : 'bg-[#1a1a19] border-[#3d3d3a] text-[#c2bfb4] hover:bg-[#2b2b29] hover:border-[#4a4a46]'
+                }`;
+                div.innerHTML = `
+                    <div class="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold mr-2" onclick="selectLayer(${i})">${layer.name}</div>
+                    <div class="flex items-center gap-1 bg-black/30 rounded p-1">
+                        <button class="w-5 h-5 flex items-center justify-center hover:bg-white/20 rounded text-[10px] transition ${i === layers.length-1 ? 'opacity-30 cursor-not-allowed' : ''}" onclick="moveLayer(event, ${i}, 1)">▲</button>
+                        <button class="w-5 h-5 flex items-center justify-center hover:bg-white/20 rounded text-[10px] transition ${i === 0 ? 'opacity-30 cursor-not-allowed' : ''}" onclick="moveLayer(event, ${i}, -1)">▼</button>
+                        <div class="w-px h-3 bg-white/20 mx-0.5"></div>
+                        <button class="w-5 h-5 flex items-center justify-center text-red-400 hover:bg-red-500/20 rounded text-xs transition" onclick="deleteLayer(event, ${i})">✕</button>
+                    </div>`;
+                layerListEl.appendChild(div);
+            }
+        }
+
+        window.selectLayer = function(idx) {
+            if (idx < 0 || idx >= layers.length) { activeLayerIndex = -1; lockUI(); }
+            else { activeLayerIndex = idx; unlockUIAndPopulate(layers[idx]); }
+            updateLayerListUI();
+        };
+        window.deleteLayer = function(event, idx) {
+            event.stopPropagation();
+            layers.splice(idx, 1);
+            if (layers.length === 0) selectLayer(-1);
+            else if (activeLayerIndex === idx) selectLayer(0);
+            else if (activeLayerIndex > idx) selectLayer(activeLayerIndex-1);
+            else updateLayerListUI();
+        };
+        window.moveLayer = function(event, idx, dir) {
+            event.stopPropagation();
+            const targetIdx = idx + dir;
+            if (targetIdx < 0 || targetIdx >= layers.length) return;
+            const temp = layers[idx]; layers[idx] = layers[targetIdx]; layers[targetIdx] = temp;
+            if (activeLayerIndex === idx) activeLayerIndex = targetIdx;
+            else if (activeLayerIndex === targetIdx) activeLayerIndex = idx;
+            updateLayerListUI();
+        };
+
+        const ui = {
+            x: document.getElementById('ctrl-x'), y: document.getElementById('ctrl-y'),
+            scale: document.getElementById('ctrl-scale'), scaleVal: document.getElementById('val-scale'),
+            effType: document.getElementById('ctrl-effect-type'), effColor: document.getElementById('ctrl-eff-color'),
+            effColorMode: document.getElementById('ctrl-eff-color-mode'), effLink: document.getElementById('ctrl-eff-link'),
+            effX: document.getElementById('ctrl-eff-x'), effY: document.getElementById('ctrl-eff-y'),
+            effScale: document.getElementById('ctrl-eff-scale'), effScaleVal: document.getElementById('val-eff-scale'),
+            effTransformSection: document.getElementById('eff-transform-section'),
+            effDensity: document.getElementById('ctrl-eff-density'), effSize: document.getElementById('ctrl-eff-size'),
+            effSpeed: document.getElementById('ctrl-eff-speed')
+        };
+
+        function lockUI() { controlsContainer.classList.add('opacity-30', 'pointer-events-none', 'filter', 'grayscale'); }
+        function updateTransformSectionVisibility() {
+            if (activeLayerIndex < 0) { ui.effTransformSection.classList.add('hidden'); return; }
+            const layer = layers[activeLayerIndex];
+            if (POSITIONABLE_EFFECTS.has(layer.effect.type)) ui.effTransformSection.classList.remove('hidden');
+            else ui.effTransformSection.classList.add('hidden');
+        }
+        function unlockUIAndPopulate(layer) {
+            controlsContainer.classList.remove('opacity-30', 'pointer-events-none', 'filter', 'grayscale');
+            ui.x.value = Math.round(layer.x);
+            ui.y.value = Math.round(layer.y);
+            ui.scale.value = layer.scale;
+            ui.scaleVal.innerText = layer.scale.toFixed(2);
+            ui.effType.value = layer.effect.type;
+            ui.effColor.value = layer.effect.color;
+            ui.effColorMode.value = layer.effect.colorMode || 'default';
+            ui.effLink.checked = !!layer.effectLink;
+            ui.effX.value = Math.round(layer.effect.offsetX || 0);
+            ui.effY.value = Math.round(layer.effect.offsetY || 0);
+            ui.effScale.value = layer.effect.scale || 1;
+            ui.effScaleVal.innerText = (layer.effect.scale || 1).toFixed(2);
+            ui.effDensity.value = layer.effect.density;
+            ui.effSize.value = layer.effect.size;
+            ui.effSpeed.value = layer.effect.speed;
+            populateFxUI(layer);
+            updateTransformSectionVisibility();
+        }
+
+        function setupUIListeners() {
+            function bind(el, updater, isChange = false) {
+                el.addEventListener(isChange ? 'change' : 'input', (e) => {
+                    if (activeLayerIndex >= 0 && activeLayerIndex < layers.length) {
+                        const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+                        updater(layers[activeLayerIndex], val);
+                    }
+                });
+            }
+            bind(ui.x, (l, v) => l.x = parseFloat(v) || 0);
+            bind(ui.y, (l, v) => l.y = parseFloat(v) || 0);
+            bind(ui.scale, (l, v) => {
+                const newScale = parseFloat(v);
+                if (!isFinite(newScale)) return;
+                const oldW = l.image.width * l.scale, oldH = l.image.height * l.scale;
+                const newW = l.image.width * newScale, newH = l.image.height * newScale;
+                l.x += (oldW-newW)/2; l.y += (oldH-newH)/2;
+                l.scale = newScale;
+                ui.x.value = Math.round(l.x); ui.y.value = Math.round(l.y);
+                ui.scaleVal.innerText = newScale.toFixed(2);
+            });
+            bind(ui.effType, (l, v) => { l.effect.type = v; l.particleManager.particles = []; updateTransformSectionVisibility(); }, true);
+            bind(ui.effColor, (l, v) => l.effect.color = v, true);
+            bind(ui.effColorMode, (l, v) => l.effect.colorMode = v, true);
+            bind(ui.effLink, (l, v) => l.effectLink = v, true);
+            bind(ui.effX, (l, v) => { l.effect.offsetX = parseFloat(v) || 0; });
+            bind(ui.effY, (l, v) => { l.effect.offsetY = parseFloat(v) || 0; });
+            bind(ui.effScale, (l, v) => { const s = parseFloat(v) || 1; l.effect.scale = s; ui.effScaleVal.innerText = s.toFixed(2); });
+            bind(ui.effDensity, (l, v) => l.effect.density = parseFloat(v));
+            bind(ui.effSize, (l, v) => l.effect.size = parseFloat(v));
+            bind(ui.effSpeed, (l, v) => l.effect.speed = parseFloat(v));
+        }
+        setupUIListeners();
+
+        const fxListEl = document.getElementById('fx-list');
+        const fxUI = {};
+        FX_LIST.forEach(f => {
+            const cfg = FX_PARAMS[f.key] || {};
+            const card = document.createElement('div');
+            card.className = 'fx-card disabled';
+            card.id = 'fx-card-' + f.key;
+            let bodyHTML = '';
+            if (cfg.speed || cfg.range) {
+                bodyHTML += '<div class="fx-body">';
+                if (cfg.speed) bodyHTML += `
+                    <div>
+                        <label class="block text-[9px] text-[#8a8778] mb-1 tracking-wide flex justify-between">
+                            <span>Velocità</span>
+                            <span id="fx-spd-val-${f.key}" class="text-[#d4a373] font-bold tabular-nums">1.0</span>
+                        </label>
+                        <input type="range" id="fx-spd-${f.key}" min="0.1" max="5" step="0.1" value="1" class="w-full">
+                    </div>`;
+                if (cfg.range) bodyHTML += `
+                    <div>
+                        <label class="block text-[9px] text-[#8a8778] mb-1 tracking-wide flex justify-between">
+                            <span>Range (px)</span>
+                            <span id="fx-rng-val-${f.key}" class="text-[#d4a373] font-bold tabular-nums">200</span>
+                        </label>
+                        <input type="range" id="fx-rng-${f.key}" min="10" max="1500" step="10" value="200" class="w-full">
+                    </div>`;
+                bodyHTML += '</div>';
+            }
+            card.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="fx-on-${f.key}" class="cursor-pointer flex-shrink-0">
+                    <label for="fx-on-${f.key}" class="text-[10px] font-medium text-[#c2bfb4] flex-1 min-w-0 cursor-pointer truncate" title="${f.label}">${f.label}</label>
+                    <input type="range" id="fx-amt-${f.key}" min="0" max="100" step="1" value="50" class="fx-amt-range">
+                    <span id="fx-val-${f.key}" class="text-[10px] text-[#d4a373] font-bold w-7 text-right flex-shrink-0 tabular-nums">50</span>
+                </div>${bodyHTML}`;
+            fxListEl.appendChild(card);
+            fxUI[f.key] = { on: card.querySelector(`#fx-on-${f.key}`), amt: card.querySelector(`#fx-amt-${f.key}`), val: card.querySelector(`#fx-val-${f.key}`) };
+            if (cfg.speed) { fxUI[f.key].spd = card.querySelector(`#fx-spd-${f.key}`); fxUI[f.key].spdVal = card.querySelector(`#fx-spd-val-${f.key}`); }
+            if (cfg.range) { fxUI[f.key].rng = card.querySelector(`#fx-rng-${f.key}`); fxUI[f.key].rngVal = card.querySelector(`#fx-rng-val-${f.key}`); }
+            fxUI[f.key].on.addEventListener('change', (e) => {
+                card.classList.toggle('disabled', !e.target.checked);
+                if (activeLayerIndex >= 0) layers[activeLayerIndex].fx[f.key].on = e.target.checked;
+            });
+            fxUI[f.key].amt.addEventListener('input', (e) => {
+                fxUI[f.key].val.innerText = e.target.value;
+                if (activeLayerIndex >= 0) layers[activeLayerIndex].fx[f.key].amt = parseFloat(e.target.value);
+            });
+            if (fxUI[f.key].spd) fxUI[f.key].spd.addEventListener('input', (e) => {
+                fxUI[f.key].spdVal.innerText = parseFloat(e.target.value).toFixed(1);
+                if (activeLayerIndex >= 0) layers[activeLayerIndex].fx[f.key].speed = parseFloat(e.target.value);
+            });
+            if (fxUI[f.key].rng) fxUI[f.key].rng.addEventListener('input', (e) => {
+                fxUI[f.key].rngVal.innerText = e.target.value;
+                if (activeLayerIndex >= 0) layers[activeLayerIndex].fx[f.key].range = parseFloat(e.target.value);
+            });
+        });
+
+        const fxSpeedEl = document.getElementById('ctrl-fx-speed');
+        const fxSpeedValEl = document.getElementById('val-fx-speed');
+        fxSpeedEl.addEventListener('input', (e) => {
+            fxSpeedValEl.innerText = parseFloat(e.target.value).toFixed(1);
+            if (activeLayerIndex >= 0) layers[activeLayerIndex].fxSpeed = parseFloat(e.target.value);
+        });
+
+        function populateFxUI(layer) {
+            FX_LIST.forEach(f => {
+                const state = layer.fx[f.key];
+                fxUI[f.key].on.checked = state.on;
+                fxUI[f.key].amt.value = state.amt;
+                fxUI[f.key].val.innerText = state.amt;
+                document.getElementById('fx-card-'+f.key).classList.toggle('disabled', !state.on);
+                if (fxUI[f.key].spd && state.speed !== undefined) {
+                    fxUI[f.key].spd.value = state.speed;
+                    fxUI[f.key].spdVal.innerText = parseFloat(state.speed).toFixed(1);
+                }
+                if (fxUI[f.key].rng && state.range !== undefined) {
+                    fxUI[f.key].rng.value = state.range;
+                    fxUI[f.key].rngVal.innerText = Math.round(state.range);
+                }
+            });
+            fxSpeedEl.value = layer.fxSpeed;
+            fxSpeedValEl.innerText = layer.fxSpeed.toFixed(1);
+        }
+
+        function renderLoop() {
+            const now = performance.now();
+            const dt = (now-lastTime)/1000;
+            lastTime = now;
+            if (isLoopExporting) { requestAnimationFrame(renderLoop); return; }
+            globalTime += dt;
+            renderScene(dt);
+            requestAnimationFrame(renderLoop);
+        }
+
+        function renderScene(dt) {
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < layers.length; i++) {
+                const layer = layers[i];
+                const scaledW = layer.image.width * layer.scale;
+                const scaledH = layer.image.height * layer.scale;
+                const finalX = layer.x, finalY = layer.y;
+                const fx = computeFx(layer, scaledW, scaledH, globalTime);
+                ctx.save();
+                ctx.translate(finalX, finalY);
+                ctx.save();
+                applyFxTransform(ctx, fx, scaledW, scaledH);
+                ctx.save();
+                applyFxStyle(ctx, fx);
+                if (fx.chroma > 0) drawChromaImage(ctx, layer, scaledW, scaledH, fx.chroma);
+                else ctx.drawImage(layer.image, 0, 0, scaledW, scaledH);
+                ctx.restore(); ctx.restore();
+                layer.particleManager.update(dt, scaledW, scaledH);
+                if (layer.effectLink) {
+                    ctx.save(); applyFxTransform(ctx, fx, scaledW, scaledH);
+                    layer.particleManager.drawLocal(ctx, scaledW, scaledH, globalTime);
+                    ctx.restore();
+                } else {
+                    layer.particleManager.drawLocal(ctx, scaledW, scaledH, globalTime);
+                }
+                ctx.restore();
+                if (i === activeLayerIndex && !isLoopExporting) {
+                    ctx.strokeStyle = '#d97757'; ctx.lineWidth = 2;
+                    ctx.setLineDash([6,6]); ctx.strokeRect(finalX, finalY, scaledW, scaledH); ctx.setLineDash([]);
+                    if (POSITIONABLE_EFFECTS.has(layer.effect.type)) {
+                        const ecx = finalX + scaledW/2 + (layer.effect.offsetX||0);
+                        const ecy = finalY + scaledH/2 + (layer.effect.offsetY||0);
+                        const er = Math.min(scaledW, scaledH)*0.35*(layer.effect.scale||1);
+                        ctx.strokeStyle = '#e8a589'; ctx.lineWidth = 1.5;
+                        ctx.setLineDash([3,4]); ctx.beginPath(); ctx.arc(ecx, ecy, Math.max(20, er), 0, Math.PI*2); ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                }
+            }
+        }
+        requestAnimationFrame(renderLoop);
+
+        let effDragging = null;
+        function canvasMouseCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            return { mx: (e.clientX-rect.left)*(canvas.width/rect.width), my: (e.clientY-rect.top)*(canvas.height/rect.height) };
+        }
+        function getEffectScreenPos(layer) {
+            const sw = layer.image.width * layer.scale, sh = layer.image.height * layer.scale;
+            return { x: layer.x + sw/2 + (layer.effect.offsetX||0), y: layer.y + sh/2 + (layer.effect.offsetY||0), sw, sh };
+        }
+        canvas.addEventListener('mousedown', (e) => {
+            if (activeLayerIndex < 0 || activeLayerIndex >= layers.length) return;
+            if (isLoopExporting) return;
+            const layer = layers[activeLayerIndex];
+            if (!POSITIONABLE_EFFECTS.has(layer.effect.type)) return;
+            const { mx, my } = canvasMouseCoords(e);
+            const ep = getEffectScreenPos(layer);
+            const hitR = Math.max(40, Math.min(ep.sw, ep.sh)*0.4*(layer.effect.scale||1));
+            const dx = mx-ep.x, dy = my-ep.y;
+            if (dx*dx+dy*dy <= hitR*hitR) {
+                effDragging = { layer, dx, dy };
+                canvas.style.cursor = 'grabbing'; e.preventDefault();
+            }
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (effDragging) {
+                const layer = effDragging.layer;
+                const { mx, my } = canvasMouseCoords(e);
+                layer.effect.offsetX = mx - effDragging.dx - (layer.x + layer.image.width*layer.scale/2);
+                layer.effect.offsetY = my - effDragging.dy - (layer.y + layer.image.height*layer.scale/2);
+                if (activeLayerIndex >= 0 && layers[activeLayerIndex] === layer) {
+                    ui.effX.value = Math.round(layer.effect.offsetX);
+                    ui.effY.value = Math.round(layer.effect.offsetY);
+                }
+                return;
+            }
+            if (activeLayerIndex >= 0 && activeLayerIndex < layers.length && !isLoopExporting) {
+                const layer = layers[activeLayerIndex];
+                if (POSITIONABLE_EFFECTS.has(layer.effect.type)) {
+                    const { mx, my } = canvasMouseCoords(e);
+                    const ep = getEffectScreenPos(layer);
+                    const hitR = Math.max(40, Math.min(ep.sw, ep.sh)*0.4*(layer.effect.scale||1));
+                    const dx = mx-ep.x, dy = my-ep.y;
+                    canvas.style.cursor = (dx*dx+dy*dy <= hitR*hitR) ? 'grab' : 'default';
+                } else canvas.style.cursor = 'default';
+            }
+        });
+        window.addEventListener('mouseup', () => {
+            if (effDragging) { effDragging = null; canvas.style.cursor = 'default'; }
+        });
+
+        document.getElementById('btn-export-img').addEventListener('click', () => {
+            const comp = getCompressionSettings();
+            const quality = 1-(comp.img/100)*0.75;
+            const tempActive = activeLayerIndex;
+            activeLayerIndex = -1;
+            ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (const layer of layers) {
+                const sw = layer.image.width*layer.scale, sh = layer.image.height*layer.scale;
+                const lfx = computeFx(layer, sw, sh, globalTime);
+                ctx.save(); ctx.translate(layer.x, layer.y);
+                ctx.save(); applyFxTransform(ctx, lfx, sw, sh);
+                ctx.save(); applyFxStyle(ctx, lfx);
+                if (lfx.chroma > 0) drawChromaImage(ctx, layer, sw, sh, lfx.chroma);
+                else ctx.drawImage(layer.image, 0, 0, sw, sh);
+                ctx.restore(); ctx.restore();
+                layer.particleManager.update(0.016, sw, sh);
+                if (layer.effectLink) {
+                    ctx.save(); applyFxTransform(ctx, lfx, sw, sh);
+                    layer.particleManager.drawLocal(ctx, sw, sh, globalTime); ctx.restore();
+                } else layer.particleManager.drawLocal(ctx, sw, sh, globalTime);
+                ctx.restore();
+            }
+            const dataUrl = canvas.toDataURL('image/webp', Math.max(0.1, Math.min(1, quality)));
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = 'VFX_Pro_Export_c'+comp.img+'_'+Date.now()+'.webp';
+            a.click();
+            activeLayerIndex = tempActive;
+        });
+
+        const btnExportLoop = document.getElementById('btn-export-loop');
+        const textExportLoop = document.getElementById('text-export-loop');
+        const loopProgressWrap = document.getElementById('loop-progress-wrap');
+        const loopProgressBar = document.getElementById('loop-progress-bar');
+        let loopCancel = false;
+
+        function riffU32(n) { const b = new Uint8Array(4); new DataView(b.buffer).setUint32(0, n, true); return b; }
+        function riffU24(n) { return new Uint8Array([n & 255, (n >> 8) & 255, (n >> 16) & 255]); }
+        function riffU16(n) { return new Uint8Array([n & 255, (n >> 8) & 255]); }
+        function riffTag(str) { return new Uint8Array([...str].map(c => c.charCodeAt(0))); }
+        function concatU8(parts) {
+            let total = 0; for (const p of parts) total += p.length;
+            const out = new Uint8Array(total); let o = 0;
+            for (const p of parts) { out.set(p, o); o += p.length; }
+            return out;
+        }
+        function parseWebPFrame(u8) {
+            const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+            const tag = (o) => String.fromCharCode(u8[o],u8[o+1],u8[o+2],u8[o+3]);
+            if (u8.length < 20 || tag(0) !== 'RIFF' || tag(8) !== 'WEBP') throw new Error('Frame WebP invalido.');
+            const out = []; let pos = 12;
+            while (pos+8 <= u8.length) {
+                const id = tag(pos); const size = dv.getUint32(pos+4, true);
+                if (id === 'ALPH' || id === 'VP8 ' || id === 'VP8L') {
+                    out.push(riffTag(id), riffU32(size), u8.subarray(pos+8, pos+8+size));
+                    if (size & 1) out.push(new Uint8Array(1));
+                }
+                pos += 8+size+(size&1);
+            }
+            if (!out.length) throw new Error('Frame WebP privo di dati.');
+            return concatU8(out);
+        }
+        function buildAnimatedWebP(payloads, W, H, fps) {
+            const chunks = [];
+            chunks.push(riffTag('VP8X'), riffU32(10), concatU8([new Uint8Array([0x12,0,0,0]), riffU24(W-1), riffU24(H-1)]));
+            chunks.push(riffTag('ANIM'), riffU32(6), new Uint8Array([0,0,0,255]), riffU16(0));
+            let prevEnd = 0;
+            payloads.forEach((pl, i) => {
+                const end = Math.round((i+1)*1000/fps); const dur = Math.max(1, end-prevEnd); prevEnd = end;
+                const hdr = concatU8([riffU24(0), riffU24(0), riffU24(W-1), riffU24(H-1), riffU24(dur), new Uint8Array([0x02])]);
+                const size = hdr.length + pl.length;
+                chunks.push(riffTag('ANMF'), riffU32(size), hdr, pl);
+                if (size & 1) chunks.push(new Uint8Array(1));
+            });
+            const body = concatU8(chunks);
+            return new Blob([riffTag('RIFF'), riffU32(body.length+4), riffTag('WEBP'), body], { type: 'image/webp' });
+        }
+        function stepParticles(dt) {
+            for (const l of layers) l.particleManager.update(dt, l.image.width*l.scale, l.image.height*l.scale);
+        }
+        function setLoopUI(running, label, pct) {
+            textExportLoop.innerText = label;
+            loopProgressWrap.classList.toggle('hidden', !running);
+            loopProgressBar.style.width = (pct||0)+'%';
+            btnExportLoop.classList.toggle('animate-pulse', running);
+            layerListEl.style.pointerEvents = running ? 'none' : '';
+            controlsContainer.style.pointerEvents = running ? 'none' : '';
+            document.getElementById('file-upload').disabled = running;
+            document.getElementById('btn-update-canvas').disabled = running;
+            document.getElementById('btn-export-img').disabled = running;
+            const bw = document.getElementById('btn-export-webm'); if (bw) bw.disabled = running;
+            const bg = document.getElementById('btn-export-gif'); if (bg) bg.disabled = running;
+            const bv = document.getElementById('btn-verify-loop'); if (bv) bv.disabled = running;
+        }
+        function setVerifyUI(running, label, pct) {
+            const box = document.getElementById('loop-verify-status');
+            if (running) { box.classList.remove('hidden'); box.textContent = label + (pct !== undefined ? ` · ${pct}%` : ''); }
+            else box.classList.add('hidden');
+            document.getElementById('btn-export-img').disabled = running;
+            document.getElementById('btn-export-webm').disabled = running;
+            document.getElementById('btn-export-loop').disabled = running;
+            document.getElementById('btn-export-gif').disabled = running;
+            document.getElementById('btn-verify-loop').disabled = running;
+            document.getElementById('file-upload').disabled = running;
+            document.getElementById('btn-update-canvas').disabled = running;
+        }
+        function collectLoopFreqs() {
+            const TAU = 2*Math.PI; const out = [];
+            for (const l of layers) {
+                const sp = l.fxSpeed;
+                const A = (k) => (l.fx[k].on ? l.fx[k].amt/100 : 0);
+                const S = (k) => (l.fx[k].speed !== undefined ? l.fx[k].speed : 1);
+                const add = (omega) => out.push(omega/TAU);
+                let a;
+                if (A('breathing')>0) add(1.6*sp*S('breathing'));
+                if (A('sway')>0) add(1.2*sp*S('sway'));
+                if (A('blurpulse')>0) add(2*sp*S('blurpulse'));
+                if (A('heartbeat')>0) add(1.4*sp*S('heartbeat')*TAU);
+                if (A('float')>0) add(0.8*sp*S('float'));
+                if (A('brightness')>0) add(2*sp*S('brightness'));
+                if (A('glow')>0) add(2*sp*S('glow'));
+                if ((a=A('hue'))>0) add(120*a*sp*S('hue')*Math.PI/180);
+                if (A('saturation')>0) add(2*sp*S('saturation'));
+                if (A('fade')>0) add(1.5*sp*S('fade'));
+                if (A('skew')>0) add(1.5*sp*S('skew'));
+                if (A('jelly')>0) add(6*sp*S('jelly'));
+                if ((a=A('spin'))>0) add(3*a*sp*S('spin'));
+                if (A('bounce')>0) add(3*sp*S('bounce'));
+                if (A('flip')>0) add(2*sp*S('flip'));
+                if (A('chroma')>0) add(4*sp*S('chroma'));
+                if (A('grayscale')>0) add(1.5*sp*S('grayscale'));
+                if (A('oscX')>0) add(sp*S('oscX'));
+                if (A('oscY')>0) add(sp*S('oscY'));
+                const t = l.effect.type;
+                if (t==='neongrid') add(1.5); if (t==='runecircle') add(0.8); if (t==='sacredgeo') add(0.5);
+                if (t==='radialburst') add(1.0); if (t==='kaleido') add(0.7); if (t==='auroracurtain') add(1.0);
+                if (t==='volumrays') add(0.4); if (t==='hexgrid') add(0.6); if (t==='tribalrings') add(0.9);
+                if (t==='chromwaves') add(1.2); if (t==='starwarp') add(2.0); if (t==='digitalsand') add(1.0);
+                if (t==='plasmaorbs') add(0.8); if (t==='sakura') add(1.0); if (t==='cyberrain') add(2.5);
+                if (t==='swarm') add(1.5); if (t==='orbs') add(0.6); if (t==='lightmotes') add(0.8);
+                if (t==='bubblecol') add(0.5); if (t==='goldsparks') add(1.2); if (t==='inkdiff') add(0.7);
+                if (t==='crystal') add(0.5); if (t==='energyvortex') add(1.0); if (t==='portal') add(0.8);
+                if (t==='sparktrail') add(1.5); if (t==='quantum') add(1.2);
+                if (t==='flame') add(2.5); if (t==='hearth') add(2.2); if (t==='electricarc') add(6.0);
+                if (t==='fire') add(1.5); if (t==='highvoltage') add(5.0);
+            }
+            return out;
+        }
+        function autoLoopDuration(fps, maxSec = 12) {
+            const freqs = collectLoopFreqs();
+            if (!freqs.length) return 4;
+            const minN = Math.max(2, Math.round(1*fps));
+            const maxN = Math.max(minN, Math.round(maxSec*fps));
+            let bestN = minN, bestErr = Infinity;
+            for (let N = minN; N <= maxN; N++) {
+                const T = N/fps; let err = 0;
+                for (const f of freqs) { const c = f*T; const r = Math.max(1, Math.round(c));
+                    err = Math.max(err, Math.abs(r-c)/c); }
+                if (err <= 0.02) return T;
+                if (err < bestErr-1e-9) { bestErr = err; bestN = N; }
+            }
+            return bestN/fps;
+        }
+        const loopAutoEl = document.getElementById('loop-auto');
+        const loopDurEl = document.getElementById('loop-duration');
+        loopAutoEl.addEventListener('change', () => { loopDurEl.disabled = loopAutoEl.checked; });
+        const loopAutoInfoEl = document.getElementById('loop-auto-info');
+        const loopAutoInfoBox = document.getElementById('loop-auto-info-box');
+        function updateLoopAutoInfo() {
+            if (!loopAutoEl.checked) {
+                loopAutoInfoEl.innerText = 'manuale';
+                loopAutoInfoEl.classList.remove('text-emerald-300');
+                loopAutoInfoEl.classList.add('text-slate-400');
+                loopAutoInfoBox.classList.add('opacity-50');
+                return;
+            }
+            loopAutoInfoEl.classList.add('text-emerald-300');
+            loopAutoInfoEl.classList.remove('text-slate-400');
+            loopAutoInfoBox.classList.remove('opacity-50');
+            const fps = parseInt(document.getElementById('loop-fps').value) || 30;
+            const freqs = collectLoopFreqs();
+            if (freqs.length === 0) { loopAutoInfoEl.innerText = '4.00s · 120fr · nessuna anim. attiva'; return; }
+            const T = autoLoopDuration(fps);
+            let maxErr = 0;
+            for (const f of freqs) { const c = f*T; const r = Math.max(1, Math.round(c));
+                maxErr = Math.max(maxErr, Math.abs(r-c)/c); }
+            const precision = ((1-maxErr)*100).toFixed(1);
+            const frames = Math.round(T*fps);
+            let dotColor = 'bg-emerald-400';
+            if (maxErr > 0.02) dotColor = 'bg-amber-400';
+            if (maxErr > 0.05) dotColor = 'bg-red-400';
+            loopAutoInfoEl.innerHTML = `<span class="inline-block w-1.5 h-1.5 rounded-full ${dotColor} mr-1"></span>`+
+                `${T.toFixed(2)}s · ${frames}fr · ${precision}% preciso · ${freqs.length} anim.`;
+        }
+        setInterval(() => { if (!isLoopExporting) updateLoopAutoInfo(); }, 400);
+        document.getElementById('loop-fps').addEventListener('change', updateLoopAutoInfo);
+        loopAutoEl.addEventListener('change', () => { loopDurEl.disabled = loopAutoEl.checked; updateLoopAutoInfo(); });
+        setTimeout(updateLoopAutoInfo, 100);
+
+        async function exportSeamlessLoopWebP() {
+            if (isLoopExporting) { loopCancel = true; return; }
+            if (layers.length === 0) { alert('Carica almeno un livello prima di esportare.'); return; }
+            if (!canvas.toDataURL('image/webp').startsWith('data:image/webp')) { alert('Browser senza WebP support.'); return; }
+            const fps = parseInt(document.getElementById('loop-fps').value) || 30;
+            let seconds;
+            if (loopAutoEl.checked) { seconds = autoLoopDuration(fps); loopDurEl.value = seconds.toFixed(2); }
+            else seconds = Math.min(60, Math.max(0.5, parseFloat(loopDurEl.value) || 4));
+            const quality = getWebPQuality();
+            const N = Math.max(2, Math.round(seconds*fps));
+            const frameDt = 1/fps; const T = N*frameDt;
+            const hasParticles = layers.some(l => l.effect.type !== 'none');
+            const maxK = Math.max(1, Math.floor(400e6/(canvas.width*canvas.height*4)));
+            const K = hasParticles ? Math.min(N, Math.max(1, Math.round(N*0.5)), maxK) : 0;
+            const substeps = Math.max(1, Math.round(60/fps));
+            const subDt = frameDt/substeps;
+            const total = N+K;
+            const savedTime = globalTime;
+            isLoopExporting = true; loopCancel = false; loopDuration = T;
+            setLoopUI(true, 'Preparazione WebP... (clic per annullare)', 0);
+            await new Promise(r => setTimeout(r, 30));
+            try {
+                if (hasParticles) {
+                    const minSpeed = Math.min(...layers.filter(l => l.effect.type !== 'none').map(l => Math.max(0.1, l.effect.speed)));
+                    const warmSteps = Math.round(Math.min(30, 8/minSpeed)*60);
+                    for (let s = 0; s < warmSteps; s++) stepParticles(1/60);
+                }
+                const payloads = new Array(N); const heads = [];
+                const encode = async (idx) => {
+                    const blob = await new Promise(r => canvas.toBlob(r, 'image/webp', quality));
+                    if (!blob || blob.type !== 'image/webp') throw new Error('Codifica WebP non riuscita.');
+                    payloads[idx] = parseWebPFrame(new Uint8Array(await blob.arrayBuffer()));
+                };
+                for (let j = 0; j < total; j++) {
+                    if (loopCancel) throw new Error('__cancel__');
+                    globalTime = j*frameDt; loopFrame = j%N;
+                    for (let s = 0; s < substeps-1; s++) stepParticles(subDt);
+                    renderScene(subDt);
+                    if (j < K) {
+                        const c = document.createElement('canvas');
+                        c.width = canvas.width; c.height = canvas.height;
+                        c.getContext('2d').drawImage(canvas, 0, 0); heads.push(c);
+                    } else if (j < N) await encode(j);
+                    else {
+                        const i = j-N; const alpha = i/K;
+                        if (alpha > 0) { ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(heads[i], 0, 0); ctx.restore(); }
+                        await encode(i);
+                    }
+                    const pct = Math.round(((j+1)/total)*100);
+                    setLoopUI(true, `Rendering WebP ${j+1}/${total} (${pct}%) - clic per annullare`, pct);
+                    await new Promise(r => setTimeout(r, 0));
+                }
+                setLoopUI(true, 'Creazione file WebP...', 100);
+                await new Promise(r => setTimeout(r, 20));
+                const blob = buildAnimatedWebP(payloads, canvas.width, canvas.height, fps);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `VFX_Pro_Loop_${T.toFixed(2)}s_${fps}fps_${Date.now()}.webp`;
+                document.body.appendChild(a); a.click();
+                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+            } catch (err) {
+                if (err.message !== '__cancel__') alert('Esportazione WebP loop fallita: ' + err.message);
+            } finally {
+                globalTime = savedTime; loopDuration = 0; isLoopExporting = false;
+                lastTime = performance.now(); setLoopUI(false, 'Esporta Seamless WebP', 0);
+            }
+        }
+        btnExportLoop.addEventListener('click', exportSeamlessLoopWebP);
+
+        const btnExportWebM = document.getElementById('btn-export-webm');
+        const textExportWebM = document.getElementById('text-export-webm');
+        let _muxerModuleC = null;
+        async function getMuxerCompressed() {
+            if (_muxerModuleC) return _muxerModuleC;
+            const mod = await import('https://cdn.jsdelivr.net/npm/webm-muxer@5.1.4/+esm');
+            _muxerModuleC = { Muxer: mod.Muxer, ArrayBufferTarget: mod.ArrayBufferTarget };
+            return _muxerModuleC;
+        }
+        async function exportSeamlessWebMCompressed() {
+            if (isLoopExporting) { loopCancel = true; return; }
+            if (layers.length === 0) { alert('Carica almeno un livello prima di esportare.'); return; }
+            if (!window.VideoEncoder || !window.VideoFrame) { alert('WebCodecs non supportato.'); return; }
+            let Muxer, ArrayBufferTarget;
+            try { ({ Muxer, ArrayBufferTarget } = await getMuxerCompressed()); }
+            catch (e) { alert('Impossibile scaricare il muxer WebM.'); return; }
+            const comp = getCompressionSettings();
+            const fps = parseInt(document.getElementById('loop-fps').value) || 30;
+            let seconds;
+            if (loopAutoEl.checked) { seconds = autoLoopDuration(fps); loopDurEl.value = seconds.toFixed(2); }
+            else seconds = Math.min(60, Math.max(0.5, parseFloat(loopDurEl.value) || 4));
+            const N = Math.max(2, Math.round(seconds*fps)); const frameDt = 1/fps; const T = N*frameDt;
+            const hasParticles = layers.some(l => l.effect.type !== 'none');
+            const maxK = Math.max(1, Math.floor(400e6/(canvas.width*canvas.height*4)));
+            const K = hasParticles ? Math.min(N, Math.max(1, Math.round(N*0.5)), maxK) : 0;
+            const substeps = Math.max(1, Math.round(60/fps)); const subDt = frameDt/substeps;
+            const total = N+K;
+            const W = canvas.width, H = canvas.height;
+            let codecStr = 'vp09.00.10.08';
+            const tryCodec = async (c) => {
+                try { const s = await VideoEncoder.isConfigSupported({ codec: c, width: W, height: H, bitrate: 8e6, framerate: fps }); return !!s.supported; }
+                catch { return false; }
+            };
+            if (!(await tryCodec(codecStr))) {
+                codecStr = 'vp09.00.00.08';
+                if (!(await tryCodec(codecStr))) {
+                    const wantVP8 = confirm('VP9 non supportato. Usare VP8 (qualità ridotta)?');
+                    if (!wantVP8) return; codecStr = 'vp8';
+                }
+            }
+            const baseBpp = 0.18;
+            const bitsPerPixel = baseBpp*(1-(comp.webm/100)*0.89);
+            const targetBitrate = Math.min(12_000_000, Math.max(300_000, Math.round(W*H*fps*bitsPerPixel)));
+            const muxer = new Muxer({
+                target: new ArrayBufferTarget(),
+                video: { codec: codecStr.startsWith('vp09') ? 'V_VP9' : 'V_VP8', width: W, height: H, frameRate: fps },
+                firstTimestampBehavior: 'offset'
+            });
+            const savedTime = globalTime;
+            isLoopExporting = true; loopCancel = false; loopDuration = T;
+            setLoopUI(true, 'Preparazione WebM... (clic per annullare)', 0);
+            textExportWebM.innerText = 'Esporta Seamless WebM... (clic per annullare)';
+            btnExportWebM.classList.add('animate-pulse');
+            try {
+                const encoder = new VideoEncoder({
+                    output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+                    error: (e) => console.error('VideoEncoder:', e)
+                });
+                encoder.configure({
+                    codec: codecStr, width: W, height: H, bitrate: targetBitrate,
+                    bitrateMode: 'variable', framerate: fps,
+                    latencyMode: comp.webm > 50 ? 'realtime' : 'quality'
+                });
+                if (hasParticles) {
+                    const minSpeed = Math.min(...layers.filter(l => l.effect.type !== 'none').map(l => Math.max(0.1, l.effect.speed)));
+                    const warmSteps = Math.round(Math.min(30, 8/minSpeed)*60);
+                    for (let s = 0; s < warmSteps; s++) stepParticles(1/60);
+                }
+                const outFrames = new Array(N); const heads = [];
+                const microDelay = () => new Promise(r => setTimeout(r, 0));
+                for (let j = 0; j < total; j++) {
+                    if (loopCancel) throw new Error('__cancel__');
+                    globalTime = j*frameDt; loopFrame = j%N;
+                    for (let s = 0; s < substeps-1; s++) stepParticles(subDt);
+                    renderScene(subDt);
+                    let outIdx = -1;
+                    if (j < K) { const headBmp = await createImageBitmap(canvas); heads.push(headBmp); outIdx = j; }
+                    else if (j < N) outIdx = j;
+                    else {
+                        outIdx = j-N; const alpha = outIdx/K;
+                        if (alpha > 0) { ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(heads[outIdx], 0, 0); ctx.restore(); }
+                    }
+                    outFrames[outIdx] = await createImageBitmap(canvas);
+                    const pct = Math.round(((j+1)/total)*50);
+                    setLoopUI(true, `Rendering WebM ${j+1}/${total} (${pct}%) - clic per annullare`, pct);
+                    if (j % 3 === 0) await microDelay();
+                }
+                heads.forEach(b => b.close()); heads.length = 0;
+                setLoopUI(true, 'Codifica WebM...', 50);
+                for (let i = 0; i < N; i++) {
+                    if (loopCancel) throw new Error('__cancel__');
+                    const vf = new VideoFrame(outFrames[i], {
+                        timestamp: Math.round(i*1_000_000/fps),
+                        duration: Math.round(1_000_000/fps)
+                    });
+                    encoder.encode(vf, { keyFrame: i % (fps*2) === 0 });
+                    vf.close(); outFrames[i].close(); outFrames[i] = null;
+                    if (encoder.encodeQueueSize > 20) { while (encoder.encodeQueueSize > 5) await new Promise(r => setTimeout(r, 5)); }
+                    const pct = 50 + Math.round(((i+1)/N)*50);
+                    setLoopUI(true, `Codifica WebM ${i+1}/${N} (${pct}%)`, pct);
+                    if (i % 10 === 0) await microDelay();
+                }
+                setLoopUI(true, 'Finalizzazione WebM...', 100);
+                await encoder.flush(); encoder.close(); muxer.finalize();
+                const { buffer } = muxer.target;
+                const blob = new Blob([buffer], { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `bg-loop-${W}x${H}-${fps}fps-${T.toFixed(2)}s-c${comp.webm}.webm`;
+                document.body.appendChild(a); a.click();
+                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+            } catch (err) {
+                if (err.message !== '__cancel__') alert('Esportazione WebM fallita: ' + err.message);
+            } finally {
+                globalTime = savedTime; loopDuration = 0; isLoopExporting = false;
+                lastTime = performance.now(); setLoopUI(false, 'Esporta Seamless WebP', 0);
+                textExportWebM.innerText = 'Esporta Seamless WebM';
+                btnExportWebM.classList.remove('animate-pulse');
+                updateSizePreview();
+            }
+        }
+
+        async function verifyLoopSeamless() {
+            if (layers.length === 0) { alert('Carica almeno un livello.'); return; }
+            if (isLoopExporting) { alert('Attendi la fine delle operazioni in corso.'); return; }
+            const fps = parseInt(document.getElementById('loop-fps').value) || 30;
+            let seconds;
+            if (loopAutoEl.checked) seconds = autoLoopDuration(fps);
+            else seconds = Math.min(60, Math.max(0.5, parseFloat(loopDurEl.value) || 4));
+            const N = Math.max(2, Math.round(seconds*fps)); const frameDt = 1/fps; const T = N*frameDt;
+            const hasParticles = layers.some(l => l.effect.type !== 'none');
+            const maxK = Math.max(1, Math.floor(400e6/(canvas.width*canvas.height*4)));
+            const K = hasParticles ? Math.min(N, Math.max(1, Math.round(N*0.5)), maxK) : 0;
+            const substeps = Math.max(1, Math.round(60/fps)); const subDt = frameDt/substeps;
+            const total = N+K;
+            const W = canvas.width, H = canvas.height;
+            const saved = { time: globalTime, loopDur: loopDuration, loopFrame: loopFrame, active: activeLayerIndex,
+                particles: layers.map(l => JSON.parse(JSON.stringify(l.particleManager.particles))) };
+            activeLayerIndex = -1;
+            isLoopExporting = true; loopDuration = T;
+            let frameFirst = null, frameLast = null;
+            setVerifyUI(true, 'Verifica loop in corso...', 0);
+            await new Promise(r => setTimeout(r, 30));
+            try {
+                if (hasParticles) {
+                    const minSpeed = Math.min(...layers.filter(l => l.effect.type !== 'none').map(l => Math.max(0.1, l.effect.speed)));
+                    const warmSteps = Math.round(Math.min(30, 8/minSpeed)*60);
+                    for (let s = 0; s < warmSteps; s++) stepParticles(1/60);
+                }
+                const heads = [];
+                const microDelay = () => new Promise(r => setTimeout(r, 0));
+                for (let j = 0; j < total; j++) {
+                    globalTime = j*frameDt; loopFrame = j%N;
+                    for (let s = 0; s < substeps-1; s++) stepParticles(subDt);
+                    renderScene(subDt);
+                    let outIdx = -1;
+                    if (j < K) { const c = document.createElement('canvas');
+                        c.width = W; c.height = H;
+                        c.getContext('2d').drawImage(canvas, 0, 0); heads.push(c); outIdx = j; }
+                    else if (j < N) outIdx = j;
+                    else {
+                        outIdx = j-N; const alpha = outIdx/K;
+                        if (alpha > 0) { ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(heads[outIdx], 0, 0); ctx.restore(); }
+                    }
+                    if (outIdx === 0) frameFirst = ctx.getImageData(0, 0, W, H);
+                    if (outIdx === N-1) frameLast = ctx.getImageData(0, 0, W, H);
+                    const pct = Math.round(((j+1)/total)*100);
+                    setVerifyUI(true, `Verifica ${j+1}/${total}`, pct);
+                    if (j % 3 === 0) await microDelay();
+                }
+            } finally {
+                globalTime = saved.time; loopDuration = saved.loopDur; loopFrame = saved.loopFrame;
+                activeLayerIndex = saved.active;
+                layers.forEach((l, i) => { l.particleManager.particles = saved.particles[i]; });
+                isLoopExporting = false; lastTime = performance.now();
+                setVerifyUI(false); renderScene(frameDt);
+            }
+            if (!frameFirst || !frameLast) { alert('Verifica fallita.'); return; }
+            let sumAbs = 0; const totalPx = frameFirst.data.length/4;
+            for (let i = 0; i < frameFirst.data.length; i += 4) {
+                const dr = frameFirst.data[i]-frameLast.data[i];
+                const dg = frameFirst.data[i+1]-frameLast.data[i+1];
+                const dbl = frameFirst.data[i+2]-frameLast.data[i+2];
+                sumAbs += (Math.abs(dr)+Math.abs(dg)+Math.abs(dbl))/3;
+            }
+            const mae = sumAbs/totalPx;
+            const precision = Math.max(0, Math.min(100, 100-mae*2));
+            let emoji;
+            if (precision >= 97) emoji = '✅ ECCELLENTE';
+            else if (precision >= 90) emoji = '✅ OTTIMO';
+            else if (precision >= 70) emoji = '⚠️ ACCETTABILE';
+            else if (precision >= 40) emoji = '⚠️ SCARSO';
+            else emoji = '❌ NON SEAMLESS';
+            alert(`🎯 Precisione Loop: ${precision.toFixed(1)}%  —  ${emoji}\n\n${N} frame · ${fps}fps · ${T.toFixed(2)}s · ${W}×${H}`);
+        }
+        document.getElementById('btn-verify-loop').addEventListener('click', verifyLoopSeamless);
+
+        function getCompressionSettings() {
+            return {
+                webm: parseInt(document.getElementById('ctrl-comp-webm').value) || 0,
+                gif: parseInt(document.getElementById('ctrl-comp-gif').value) || 0,
+                webp: parseInt(document.getElementById('ctrl-comp-webp').value) || 0,
+                img: parseInt(document.getElementById('ctrl-comp-img').value) || 0
+            };
+        }
+        function getWebPQuality() {
+            const comp = getCompressionSettings();
+            return Math.max(0.15, Math.min(1, 1-(comp.webp/100)*0.85));
+        }
+        function computeLoopParamsForPreview() {
+            const fps = parseInt(document.getElementById('loop-fps').value) || 30;
+            let seconds;
+            if (loopAutoEl.checked) seconds = autoLoopDuration(fps);
+            else seconds = Math.min(60, Math.max(0.5, parseFloat(loopDurEl.value) || 4));
+            const N = Math.max(2, Math.round(seconds*fps));
+            return { fps, seconds, N, T: N/fps };
+        }
+        function formatBytes(bytes) {
+            if (bytes < 1024) return Math.round(bytes)+' B';
+            if (bytes < 1024*1024) return (bytes/1024).toFixed(1)+' KB';
+            return (bytes/1024/1024).toFixed(2)+' MB';
+        }
+        function estimateSizes() {
+            const W = canvas.width, H = canvas.height;
+            const { fps, N, T } = computeLoopParamsForPreview();
+            const comp = getCompressionSettings();
+            const mp = (W*H)/1e6;
+            const baseBpp = 0.18;
+            const webmBpp = baseBpp*(1-(comp.webm/100)*0.89);
+            const webmBitrate = Math.min(12000000, Math.max(300000, Math.round(W*H*fps*webmBpp)));
+            const webmBytes = (webmBitrate/8)*T;
+            const webpQuality = getWebPQuality();
+            const webpPerMP = 40+80*webpQuality*webpQuality;
+            const webpBytes = mp*N*webpPerMP*1000;
+            const gifColors = Math.max(16, Math.round(256*(1-(comp.gif/100)*0.85)));
+            const gifPerMP = 50+100*(gifColors/256);
+            const gifBytes = mp*N*gifPerMP*1000;
+            const imgQuality = 1-(comp.img/100)*0.75;
+            const imgPerMP = 30+70*imgQuality*imgQuality;
+            const imgBytes = mp*imgPerMP*1000;
+            return { webmBytes, webpBytes, gifBytes, imgBytes, W, H, N, fps, T };
+        }
+        function updateSizePreview() {
+            const est = estimateSizes();
+            document.getElementById('est-res').textContent = est.W+'×'+est.H;
+            document.getElementById('est-frames').textContent = est.N+'fr · '+est.T.toFixed(2)+'s';
+            document.getElementById('est-webm').textContent = formatBytes(est.webmBytes);
+            document.getElementById('est-webp').textContent = formatBytes(est.webpBytes);
+            document.getElementById('est-gif').textContent = formatBytes(est.gifBytes);
+            document.getElementById('est-img').textContent = formatBytes(est.imgBytes);
+        }
+        ['webm','gif','webp','img'].forEach(function(k) {
+            const el = document.getElementById('ctrl-comp-'+k);
+            const label = document.getElementById('val-comp-'+k);
+            if (!el || !label) return;
+            el.addEventListener('input', function() { label.textContent = el.value+'%'; updateSizePreview(); });
+        });
+        ['loop-fps','loop-duration','loop-auto','canvas-width','canvas-height'].forEach(function(id) {
+            const el = document.getElementById(id);
+            if (el) { el.addEventListener('input', updateSizePreview); el.addEventListener('change', updateSizePreview); }
+        });
+        document.getElementById('btn-update-canvas').addEventListener('click', () => setTimeout(updateSizePreview, 60));
+        setInterval(() => { if (!isLoopExporting) updateSizePreview(); }, 600);
+        setTimeout(updateSizePreview, 300);
+
+        let _gifencModule = null;
+        async function getGifenc() {
+            if (_gifencModule) return _gifencModule;
+            const mod = await import('https://cdn.jsdelivr.net/npm/gifenc@1.0.3/+esm');
+            _gifencModule = { GIFEncoder: mod.GIFEncoder, quantize: mod.quantize, applyPalette: mod.applyPalette };
+            return _gifencModule;
+        }
+        const btnExportGIF = document.getElementById('btn-export-gif');
+        const textExportGIF = document.getElementById('text-export-gif');
+        async function exportSeamlessGIF() {
+            if (isLoopExporting) { loopCancel = true; return; }
+            if (layers.length === 0) { alert('Carica almeno un livello prima di esportare.'); return; }
+            let gifenc;
+            try { gifenc = await getGifenc(); }
+            catch (e) { alert('Impossibile scaricare l\'encoder GIF.'); return; }
+            const fps = parseInt(document.getElementById('loop-fps').value) || 30;
+            let seconds;
+            if (loopAutoEl.checked) { seconds = autoLoopDuration(fps); loopDurEl.value = seconds.toFixed(2); }
+            else seconds = Math.min(60, Math.max(0.5, parseFloat(loopDurEl.value) || 4));
+            const comp = getCompressionSettings();
+            const maxColors = Math.max(16, Math.round(256*(1-(comp.gif/100)*0.85)));
+            const N = Math.max(2, Math.round(seconds*fps)); const frameDt = 1/fps; const T = N*frameDt;
+            const hasParticles = layers.some(l => l.effect.type !== 'none');
+            const maxK = Math.max(1, Math.floor(200e6/(canvas.width*canvas.height*4)));
+            const K = hasParticles ? Math.min(N, Math.max(1, Math.round(N*0.5)), maxK) : 0;
+            const substeps = Math.max(1, Math.round(60/fps)); const subDt = frameDt/substeps;
+            const total = N+K;
+            const W = canvas.width, H = canvas.height;
+            const savedTime = globalTime;
+            isLoopExporting = true; loopCancel = false; loopDuration = T;
+            setLoopUI(true, 'Preparazione GIF... (clic per annullare)', 0);
+            if (textExportGIF) textExportGIF.innerText = 'Esporta Seamless GIF... (clic per annullare)';
+            btnExportGIF.classList.add('animate-pulse');
+            try {
+                const gif = gifenc.GIFEncoder();
+                const delayMs = Math.max(20, Math.round(1000/fps));
+                if (hasParticles) {
+                    const minSpeed = Math.min(...layers.filter(l => l.effect.type !== 'none').map(l => Math.max(0.1, l.effect.speed)));
+                    const warmSteps = Math.round(Math.min(30, 8/minSpeed)*60);
+                    for (let s = 0; s < warmSteps; s++) stepParticles(1/60);
+                }
+                const heads = [];
+                const microDelay = () => new Promise(r => setTimeout(r, 0));
+                for (let j = 0; j < total; j++) {
+                    if (loopCancel) throw new Error('__cancel__');
+                    globalTime = j*frameDt; loopFrame = j%N;
+                    for (let s = 0; s < substeps-1; s++) stepParticles(subDt);
+                    renderScene(subDt);
+                    if (j < K) { const c = document.createElement('canvas');
+                        c.width = W; c.height = H;
+                        c.getContext('2d').drawImage(canvas, 0, 0); heads.push(c); }
+                    else {
+                        let writeIdx = j < N ? j : (j-N);
+                        if (j >= N) {
+                            const alpha = writeIdx/K;
+                            if (alpha > 0) { ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(heads[writeIdx], 0, 0); ctx.restore(); }
+                        }
+                        const imgData = ctx.getImageData(0, 0, W, H);
+                        const palette = gifenc.quantize(imgData.data, maxColors, { format: 'rgb565' });
+                        const index = gifenc.applyPalette(imgData.data, palette, { format: 'rgb565' });
+                        gif.writeFrame(index, W, H, { palette, delay: delayMs, repeat: 0 });
+                    }
+                    const pct = Math.round(((j+1)/total)*100);
+                    setLoopUI(true, `Rendering GIF ${j+1}/${total} (${pct}%) - clic per annullare`, pct);
+                    await microDelay();
+                }
+                setLoopUI(true, 'Finalizzazione GIF...', 100);
+                await new Promise(r => setTimeout(r, 30));
+                gif.finish();
+                const bytes = gif.bytes();
+                const blob = new Blob([bytes], { type: 'image/gif' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `bg-loop-${W}x${H}-${fps}fps-${T.toFixed(2)}s.gif`;
+                document.body.appendChild(a); a.click();
+                setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+            } catch (err) {
+                if (err.message !== '__cancel__') alert('Esportazione GIF fallita: ' + err.message);
+            } finally {
+                globalTime = savedTime; loopDuration = 0; isLoopExporting = false;
+                lastTime = performance.now(); setLoopUI(false, 'Esporta Seamless WebP', 0);
+                if (textExportGIF) textExportGIF.innerText = 'Esporta Seamless GIF';
+                btnExportGIF.classList.remove('animate-pulse');
+                updateSizePreview();
+            }
+        }
+        btnExportGIF.addEventListener('click', exportSeamlessGIF);
+
+        document.getElementById('btn-export-webm').addEventListener('click', (e) => {
+            e.preventDefault(); exportSeamlessWebMCompressed();
+        });
+    </script>
+</body>
+</html>
