@@ -487,16 +487,17 @@
 
     <script>
         const canvas = document.getElementById('render-canvas');
-        const ctx = canvas.getContext('2d', { alpha: true });
+        const ctx = canvas.getContext('2d', { alpha: false });
         let logicalWidth = 2752;
         let logicalHeight = 1536;
 
-                function updateCanvasResolution() {
+        function updateCanvasResolution() {
             logicalWidth = parseInt(document.getElementById('canvas-width').value) || 2752;
             logicalHeight = parseInt(document.getElementById('canvas-height').value) || 1536;
             canvas.width = logicalWidth;
             canvas.height = logicalHeight;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         document.getElementById('btn-update-canvas').addEventListener('click', updateCanvasResolution);
         updateCanvasResolution();
@@ -1808,8 +1809,9 @@
             requestAnimationFrame(renderLoop);
         }
 
-                function renderScene(dt) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function renderScene(dt) {
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             for (let i = 0; i < layers.length; i++) {
                 const layer = layers[i];
                 const scaledW = layer.image.width * layer.scale;
@@ -1905,7 +1907,7 @@
             const quality = 1-(comp.img/100)*0.75;
             const tempActive = activeLayerIndex;
             activeLayerIndex = -1;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
             for (const layer of layers) {
                 const sw = layer.image.width*layer.scale, sh = layer.image.height*layer.scale;
                 const lfx = computeFx(layer, sw, sh, globalTime);
@@ -2211,9 +2213,9 @@
             const baseBpp = 0.18;
             const bitsPerPixel = baseBpp*(1-(comp.webm/100)*0.89);
             const targetBitrate = Math.min(12_000_000, Math.max(300_000, Math.round(W*H*fps*bitsPerPixel)));
-                        const muxer = new Muxer({
+            const muxer = new Muxer({
                 target: new ArrayBufferTarget(),
-                video: { codec: codecStr.startsWith('vp09') ? 'V_VP9' : 'V_VP8', width: W, height: H, frameRate: fps, alpha: true },
+                video: { codec: codecStr.startsWith('vp09') ? 'V_VP9' : 'V_VP8', width: W, height: H, frameRate: fps },
                 firstTimestampBehavior: 'offset'
             });
             const savedTime = globalTime;
@@ -2226,11 +2228,10 @@
                     output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
                     error: (e) => console.error('VideoEncoder:', e)
                 });
-                                encoder.configure({
+                encoder.configure({
                     codec: codecStr, width: W, height: H, bitrate: targetBitrate,
                     bitrateMode: 'variable', framerate: fps,
-                    latencyMode: comp.webm > 50 ? 'realtime' : 'quality',
-                    alpha: 'keep'
+                    latencyMode: comp.webm > 50 ? 'realtime' : 'quality'
                 });
                 if (hasParticles) {
                     const minSpeed = Math.min(...layers.filter(l => l.effect.type !== 'none').map(l => Math.max(0.1, l.effect.speed)));
@@ -2493,9 +2494,9 @@
                             if (alpha > 0) { ctx.save(); ctx.globalAlpha = alpha; ctx.drawImage(heads[writeIdx], 0, 0); ctx.restore(); }
                         }
                         const imgData = ctx.getImageData(0, 0, W, H);
-                                                const palette = gifenc.quantize(imgData.data, maxColors, { format: 'rgba4444' });
-                        const index = gifenc.applyPalette(imgData.data, palette, { format: 'rgba4444' });
-                        gif.writeFrame(index, W, H, { palette, delay: delayMs, repeat: 0, transparent: true });
+                        const palette = gifenc.quantize(imgData.data, maxColors, { format: 'rgb565' });
+                        const index = gifenc.applyPalette(imgData.data, palette, { format: 'rgb565' });
+                        gif.writeFrame(index, W, H, { palette, delay: delayMs, repeat: 0 });
                     }
                     const pct = Math.round(((j+1)/total)*100);
                     setLoopUI(true, `Rendering GIF ${j+1}/${total} (${pct}%) - clic per annullare`, pct);
